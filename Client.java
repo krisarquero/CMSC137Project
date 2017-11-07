@@ -3,6 +3,7 @@ import java.net.*;
 
 public class Client implements Runnable {
 
+	// Declaration of variables
 	private static Socket clientSocket = null;
 	private static PrintStream outputStream = null;
 	private static DataInputStream inputStream = null;
@@ -11,8 +12,10 @@ public class Client implements Runnable {
 
 	public static void main(String[] args) {
 
+		//Default port number is 2222
 		int portNumber = 2222;
 		String host = "localhost";
+
 
 		if (args.length < 2) {
 			System.out.println("Usage: java Client <host> <portNumber>.\n" + "[ Host: " + host + " ] [ Port Number: " + portNumber + " ]");
@@ -22,6 +25,8 @@ public class Client implements Runnable {
 		}
 
 
+		//Initialization of the input and output streams
+		//Uses the given port and host to open a socket
 		try {
 			clientSocket = new Socket(host, portNumber);
 			inputLine = new BufferedReader(new InputStreamReader(System.in));
@@ -33,6 +38,7 @@ public class Client implements Runnable {
 			System.out.println(e);
 		}
 
+		//ensures that the streams are initialized and the sockets are opened
 		if (clientSocket != null && outputStream != null && inputStream != null) {
 			try {
 				new Thread(new Client()).start();
@@ -54,7 +60,7 @@ public class Client implements Runnable {
 		try {
 			while ((responseLine = inputStream.readLine()) != null) {
 				System.out.println(responseLine);
-          	if (responseLine.indexOf("*** Bye") != -1){
+          	if (responseLine.indexOf("*** Bye") != -1){ 
 				break;
 			}
 		}

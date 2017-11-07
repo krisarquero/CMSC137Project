@@ -3,6 +3,7 @@ import java.net.*;
 
 public class ClientThread extends Thread {
 
+	//Declaration of variables
 	private String clientName = null;
 	private DataInputStream inputStream = null;
 	private PrintStream outputStream = null;
@@ -10,6 +11,7 @@ public class ClientThread extends Thread {
 	private final ClientThread[] threads;
 	private int maxNoOfUsers;
 
+	//Constructor declaration
 	public ClientThread(Socket clientSocket, ClientThread[] threads) {
 		this.clientSocket = clientSocket;
 		this.threads = threads;
@@ -20,6 +22,7 @@ public class ClientThread extends Thread {
 		int maxNoOfUsers = this.maxNoOfUsers;
 		ClientThread[] threads = this.threads;
 
+		//Creating the input and output streams for the client
 		try {
 			inputStream = new DataInputStream(clientSocket.getInputStream());
 			outputStream = new PrintStream(clientSocket.getOutputStream());
@@ -34,8 +37,9 @@ public class ClientThread extends Thread {
 				}
 			}
 
-			outputStream.println("----- Welcome " + name + "!\nTo leave, enter \"Bye\". -----");
+			outputStream.println("----- Welcome " + name + "!\nTo leave, enter \"/quit\". -----");
 
+			//marker to easily identify a user
 			synchronized (this) {
 				for (int i = 0; i < maxNoOfUsers; i++) {
 				if (threads[i] != null && threads[i] == this) {
@@ -51,9 +55,10 @@ public class ClientThread extends Thread {
 			}
 		}
 
+		//Getting the message from the user
 		while (true) {
 			String line = inputStream.readLine();
-			if (line.startsWith("/quit")) {
+			if (line.startsWith("/quit")) {	//Checks if the line read is /quit then breaks the loop
 				break;
 			}
 
@@ -88,6 +93,7 @@ public class ClientThread extends Thread {
 			}
 		}
 
+		//Iterates through all the users and if the user has already left the chat
 		synchronized (this) {
 			for (int i = 0; i < maxNoOfUsers; i++) {
 				if (threads[i] != null && threads[i] != this && threads[i].clientName != null) {

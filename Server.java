@@ -3,6 +3,8 @@ import java.net.*;
 
 public class Server {
 
+
+	// Initialization of variables
 	private static ServerSocket serverSocket = null;
 	private static Socket clientSocket = null;
 	private static final int maxNoOfUsers = 10;
@@ -10,19 +12,24 @@ public class Server {
 
 	public static void main(String args[]) {
 
+		// Default port number
 		int portNumber = 2222;
+
+		// Prints the usage of the program and the current port number used by the program
 		if (args.length < 1) {
 			System.out.println("Usage: java Server <portNumber>\n" + "[ Port Number: " + portNumber + " ]");
 		} else {
 			portNumber = Integer.valueOf(args[0]).intValue();
 		}
 
+		// Opens the server socket
 		try {
 			serverSocket = new ServerSocket(portNumber);
 		} catch (IOException e) {
 			System.out.println(e);
 		}
 
+		// 
 		while (true) {
 			try {
 				clientSocket = serverSocket.accept();
