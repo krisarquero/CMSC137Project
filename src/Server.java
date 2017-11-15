@@ -36,8 +36,8 @@ public class Server implements Runnable {
 	}
 
 	public void broadcast(String msg){
-		for(Iterator ite=game.getPlayers().keySet().iterator();ite.hasNext();){
-			String name=(String)ite.next();
+		for(Iterator i=game.getPlayers().keySet().iterator();i.hasNext();){
+			String name=(String)i.next();
 			Tank player=(Tank)game.getPlayers().get(name);			
 			send(player,msg);	
 		}

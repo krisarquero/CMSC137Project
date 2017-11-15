@@ -23,14 +23,14 @@ public class BattleSplix extends JFrame implements Runnable {
 	// Game's constructor
 
 	public BattleSplix(String server, String name) throws Exception {
-		super("BATTLE SPLIX");
+		super("BATTLE SPLIX: "+name);
 
 		this.server = server;
 		this.name = name;
 
 		try{
 			// Initializing the panel with grid layout of 10 by 10
-			datagramSocket.setSoTimeout(0);
+			datagramSocket.setSoTimeout(100);
 			
 
 			panel = new JPanel(new GridLayout(15,15));
@@ -66,7 +66,6 @@ public class BattleSplix extends JFrame implements Runnable {
 			setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			setVisible(true);
 		}catch(Exception e){
-			System.out.println(e);
 		}
 
 		thread.start();
@@ -89,8 +88,8 @@ public class BattleSplix extends JFrame implements Runnable {
 			byte[] buff = message.getBytes();
 			InetAddress inetAddress = InetAddress.getByName(server);
 			DatagramPacket packet = new DatagramPacket(buff, buff.length, inetAddress, PORT);
+			datagramSocket.send(packet);
 		} catch(Exception e) {
-			System.out.println(e);
 		}
 	}
 
@@ -99,7 +98,6 @@ public class BattleSplix extends JFrame implements Runnable {
 			try {
 				Thread.sleep(1);
 			} catch(Exception e){
-				System.out.println(e);
 			}
 
 			byte[] buff = new byte[256];
@@ -111,7 +109,9 @@ public class BattleSplix extends JFrame implements Runnable {
 				System.out.println(e);
 			}
 
-			serverData = new String(buff).trim();
+			serverData = new String(buff);
+			serverData = serverData.trim();
+
 
 			if (!connected && serverData.startsWith("CONNECTED")){
 				connected = true;

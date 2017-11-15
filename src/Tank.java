@@ -50,4 +50,10 @@ public class Tank {
 		string += yPos;
 		return string;
  	}
+
+ 	public String sendMessage(){
+ 		String str = "I am client: ";
+ 		str += name;
+ 		return str;
+ 	}
 }
