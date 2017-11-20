@@ -2,7 +2,7 @@ import java.net.InetAddress;
 import java.awt.Color;
 import java.util.Random;
 
-public class TankPlayer {
+public class TankPlayer{
 	private InetAddress address;
 	private int port;
 	private String name;
@@ -71,5 +71,31 @@ public class TankPlayer {
 		retval+=g+" ";
 		retval+=b;
 		return retval;
-	}	
+	}
+
+	
+	// public void move(){
+	// 	if (this.getXPos() + Tank.WIDTH + this.getDX() > 600){
+	// 		this.setDirection(0,this.getDY());
+	// 	}
+	// 	if (this.getYPos() + Tank.HEIGHT + this.getDY() > 600){
+	// 		this.setDirection(this.getDX(),0);
+	// 	}
+	// 	if (this.getYPos() + this.getDY() < 0){
+	// 		this.setDirection(this.getDX(),0);
+	// 	}
+	// 	if (this.getXPos() + this.getDX() < 0){
+	// 		this.setDirection(0,this.getDY());
+	// 	}
+	// 	super.move();
+	// }
+
+	// public void collide(Sprite object){
+	// 	this.setDirection(0,0);
+	// }
+
+	// public void notCollide(Sprite object){
+	// 	this.move();
+
+	// }
 }

@@ -18,7 +18,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 public class BattleSplix extends JPanel implements Runnable, BattleSplixConstants{
-	String[][] board = new String[32][30];
+	Board board = new Board(32, 30);
 	JFrame frame= new JFrame();
 	int x,y,xspeed=5,yspeed=5,prevX,prevY;
 	Thread t=new Thread(this);
@@ -38,10 +38,6 @@ public class BattleSplix extends JPanel implements Runnable, BattleSplixConstant
 		
 		frame.setTitle(APP_NAME+":"+name);
 		socket.setSoTimeout(100);
-
-		for (String[] row : board) {
-		    Arrays.fill(row, "0");
-		}
 
 		this.randomizePlace();
 		//GUI
@@ -102,12 +98,25 @@ public class BattleSplix extends JPanel implements Runnable, BattleSplixConstant
 	 */
 	public void paintComponent(Graphics g){
 		//g.setColor(Color.RED);
+		String[][] brd = board.getBoard();
 		for(int i = 0; i<30; i++){
 			for(int j=0; j<30; j++){
-				if(board[i][j].equals("0")){
-					continue;
+				if(brd[i][j].length()==1){
+					switch(Integer.parseInt(brd[i][j])){
+						case BRICKLESS:
+							break;
+						case BRICK:
+							g.drawImage(new ImageIcon("Block/brick.png").getImage(),i*20,j*20,20,20, this);
+							break;
+						case METAL:
+							g.drawImage(new ImageIcon("Block/metal.png").getImage(),i*20,j*20,20,20, this);
+							break;
+						case VINE:
+							g.drawImage(new ImageIcon("Block/vine.png").getImage(),i*20,j*20,20,20, this);
+							break;
+					}
 				}else{
-					String[] tileInfo = board[i][j].split(" ");
+					String[] tileInfo = brd[i][j].split(" ");
 					g.setColor(new Color(Float.valueOf(tileInfo[1]), Float.valueOf(tileInfo[2]), Float.valueOf(tileInfo[3])));
 					g.fillRect(i*20, j*20, 20, 20);
 				}
@@ -125,7 +134,7 @@ public class BattleSplix extends JPanel implements Runnable, BattleSplixConstant
 				if(y>480) y = 480;
 				//draw on the offscreen image
 				//g.drawImage(new ImageIcon("Tank/Tank.png").getImage(),x,y,20,20, this);
-				board[x/20][y/20] = pname+" "+playerInfo[4]+" "+playerInfo[5]+" "+playerInfo[6];
+				board.updateBoard(pname+" "+playerInfo[4]+" "+playerInfo[5]+" "+playerInfo[6], x/20, y/20);
 				g.setColor(new Color(Float.valueOf(playerInfo[4]), Float.valueOf(playerInfo[5]), Float.valueOf(playerInfo[6])));
 				g.fillOval(x, y, 20, 20);
 				g.drawString(pname,x-10,y+30);					
@@ -133,33 +142,38 @@ public class BattleSplix extends JPanel implements Runnable, BattleSplixConstant
 		}
 		//g.drawImage(offscreen, 0, 0, null);
 	}
-	
-	
-	
-	
+
 	class MouseMotionHandler extends MouseMotionAdapter{
-		// public void mouseMoved(MouseEvent me){
-		// 	x=me.getX();y=me.getY();
-		// 	if (prevX != x || prevY != y){
-		// 		send("PLAYER "+name+" "+x+" "+y);
-		// 	}				
-		// }
+		public void mouseMoved(MouseEvent me){}
 	}
 	
 	class KeyHandler extends KeyAdapter{
 		public void keyPressed(KeyEvent ke){
 			prevX=x;prevY=y;
 			switch (ke.getKeyCode()){
-			case KeyEvent.VK_DOWN:y+=yspeed;break;
-			case KeyEvent.VK_UP:y-=yspeed;break;
-			case KeyEvent.VK_LEFT:x-=xspeed;break;
-			case KeyEvent.VK_RIGHT:x+=xspeed;break;
+				case KeyEvent.VK_DOWN:
+					if(isMove(x/20, (y+yspeed)/20)) y+=yspeed;
+					break;
+				case KeyEvent.VK_UP:
+					if(isMove(x/20, (y-yspeed)/20)) y-=yspeed;
+					break;
+				case KeyEvent.VK_LEFT:
+					if(isMove((x-xspeed)/20, (y)/20)) x-=xspeed;
+					break;
+				case KeyEvent.VK_RIGHT:
+					if(isMove((x+xspeed)/20, (y)/20)) x+=xspeed;
+					break;
 			}
 			if (prevX != x || prevY != y){
 				//board.updateBoard(name, x/20, y/20);
 				send("PLAYER "+name+" "+x+" "+y);
-			}	
+			}
 		}
+	}
+
+	public boolean isMove(int x, int y){
+		if(board.getBoard()[x][y].equals("0") || board.getBoard()[x][y].length() > 1) return true;
+		return false;
 	}
 
 	public void randomizePlace(){

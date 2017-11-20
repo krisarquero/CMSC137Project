@@ -1,19 +1,21 @@
 import java.awt.event.*;
 import java.awt.*;
 
-public class Tile{
+public class Tile implements Runnable{
 	private int xPos, dx;
 	private int yPos, dy;
 	private int height;
 	private int width;
 	private String owner;
 	private boolean isCollision;
+	private int type;
 
-	public Tile(int xPos,int yPos,int height,int width){
+	public Tile(int xPos,int yPos,int height,int width, int type){
 		this.xPos = xPos;
 		this.yPos = yPos;
 		this.height = height;
 		this. width = width;
+		this.type = type;
 	}
 
 	public int getXPos(){
@@ -46,4 +48,7 @@ public class Tile{
     	return (thisBounds.intersects(objectBounds));
 	}
 
+	public void run(){
+		
+	}
 }
