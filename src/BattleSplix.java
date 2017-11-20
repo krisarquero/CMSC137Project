@@ -1,137 +1,195 @@
-import java.awt.event.*;
-import javax.swing.*;
-import java.awt.*;
-import java.io.*;
-import java.util.Random;
+import java.awt.Graphics;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.awt.Color;
+import java.util.Random;
+import java.util.Arrays;
 
-public class BattleSplix extends JFrame implements Runnable {
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
 
-	//Default port
-	public static final int PORT = 12345;
-	public static JPanel panel;
-	// Initialization of values
-	Thread thread=new Thread(this);
-	String playerName;
-	String server = "localhost";
+public class BattleSplix extends JPanel implements Runnable, BattleSplixConstants{
+	Board board = new Board(32, 30);
+	JFrame frame= new JFrame();
+	int x,y,xspeed=5,yspeed=5,prevX,prevY;
+	Thread t=new Thread(this);
+	String name="Ronald";
+	String pname;
+	String server="localhost";
+	boolean connected=false;
+    DatagramSocket socket = new DatagramSocket();
 	String serverData;
-	boolean connected = false;
-	String name = "Starter";
-	DatagramSocket datagramSocket = new DatagramSocket();
-	// Game's constructor
+	BufferedImage offscreen;
+	Random rand = new Random();
 
-	public BattleSplix(String server, String name) throws Exception {
-		super("BATTLE SPLIX: "+name);
 
-		this.server = server;
-		this.name = name;
+	public BattleSplix(String server,String name) throws Exception{
+		this.server=server;
+		this.name=name;
+		
+		frame.setTitle(APP_NAME+":"+name);
+		socket.setSoTimeout(100);
 
-		try{
-			// Initializing the panel with grid layout of 10 by 10
-			datagramSocket.setSoTimeout(100);
-			
-
-			panel = new JPanel(new GridLayout(15,15));
-			panel.setBorder(BorderFactory.createEmptyBorder(2,2,2,2));
-			Random rand = new Random();
-			// Randomizing the blocks for now
-			for (int i =0; i<(15*15); i++){
-					int obj = rand.nextInt(4);
-					JLabel label = new JLabel();
-					label.setOpaque(true);
-					switch(obj){
-						case 0:
-							label.setIcon(new ImageIcon("./Block/vine.png"));
-							break;
-						case 1:
-							label.setIcon(new ImageIcon("./Block/brick.png"));
-							break;
-						case 2:
-							label.setText(" ");
-							break;
-						case 3:
-							label.setIcon(new ImageIcon("./Block/water.png"));
-							break;
-					}
-			    label.setBorder(BorderFactory.createLineBorder(Color.WHITE));
-			    panel.add(label);
-			}
-
-			//Setting up the board
-			add(panel, BorderLayout.CENTER);
-			setSize(500, 500);
-			panel.setBackground(Color.BLACK);
-			setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-			setVisible(true);
-		}catch(Exception e){
-		}
-
-		thread.start();
-	}
-
+		this.randomizePlace();
+		//GUI
+		frame.getContentPane().add(this);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setSize(640, 480);
+		frame.setVisible(true);
+		
+		offscreen=(BufferedImage)this.createImage(600, 600);
 	
-	public static void main(String[] args) throws Exception{
-		if (args.length > 1){
-			String server = args[0];
-			String name = args[1];
+		frame.addKeyListener(new KeyHandler());		
+		frame.addMouseMotionListener(new MouseMotionHandler());
 
-			new BattleSplix(server, name);
-		} else {
-			System.out.println("Please provide the server and player name");
-		}
+		t.start();		
 	}
-
-	public void sendPacket(String message){
-		try {
-			byte[] buff = message.getBytes();
-			InetAddress inetAddress = InetAddress.getByName(server);
-			DatagramPacket packet = new DatagramPacket(buff, buff.length, inetAddress, PORT);
-			datagramSocket.send(packet);
-		} catch(Exception e) {
-		}
+	
+	public void send(String msg){
+		try{
+			byte[] buf = msg.getBytes();
+        	InetAddress address = InetAddress.getByName(server);
+        	DatagramPacket packet = new DatagramPacket(buf, buf.length, address, PORT);
+        	socket.send(packet);
+        }catch(Exception e){}
+		
 	}
-
+	
 	public void run(){
-		while (true){
-			try {
+		while(true){
+			try{
 				Thread.sleep(1);
-			} catch(Exception e){
-			}
-
-			byte[] buff = new byte[256];
-			DatagramPacket packet = new DatagramPacket(buff, buff.length);
-
-			try {
-				datagramSocket.receive(packet);
-			} catch(Exception e) {
-				System.out.println(e);
-			}
-
-			serverData = new String(buff);
-			serverData = serverData.trim();
-
-
+			}catch(Exception ioe){}
+						
+			//Get the data from players
+			byte[] buf = new byte[256];
+			DatagramPacket packet = new DatagramPacket(buf, buf.length);
+			try{
+     			socket.receive(packet);
+			}catch(Exception ioe){}
+			
+			serverData=new String(buf);
+			serverData=serverData.trim();
+			
+			//Study the following kids. 
 			if (!connected && serverData.startsWith("CONNECTED")){
-				connected = true;
-				System.out.println("Connected. ");
-			} else if (!connected){
-				System.out.println("Connecting...");
-				sendPacket("CONNECT " + name);
-			} else if (connected){
-				if (serverData.startsWith("PLAYER")){
-					String[] playersData = serverData.split(":");
-					for (int i = 0; i < playersData.length; i++){
-						String[] player = playersData[i].split(" ");
-						String playerName = player[1];
-						int xPos = Integer.parseInt(player[2]);
-						int yPos = Integer.parseInt(player[3]);
-
-						// update tanks position
+				connected=true;
+				System.out.println("Connected.");
+			}else if (!connected){
+				System.out.println("Connecting..");				
+				send("CONNECT "+name);
+			}else if (connected){
+				frame.repaint();				
+			}			
+		}
+	}
+	
+	/**
+	 * Repainting method
+	 */
+	public void paintComponent(Graphics g){
+		//g.setColor(Color.RED);
+		String[][] brd = board.getBoard();
+		for(int i = 0; i<30; i++){
+			for(int j=0; j<30; j++){
+				if(brd[i][j].length()==1){
+					switch(Integer.parseInt(brd[i][j])){
+						case BRICKLESS:
+							break;
+						case BRICK:
+							g.drawImage(new ImageIcon("Block/brick.png").getImage(),i*20,j*20,20,20, this);
+							break;
+						case METAL:
+							g.drawImage(new ImageIcon("Block/metal.png").getImage(),i*20,j*20,20,20, this);
+							break;
+						case VINE:
+							g.drawImage(new ImageIcon("Block/vine.png").getImage(),i*20,j*20,20,20, this);
+							break;
 					}
+				}else{
+					String[] tileInfo = brd[i][j].split(" ");
+					g.setColor(new Color(Float.valueOf(tileInfo[1]), Float.valueOf(tileInfo[2]), Float.valueOf(tileInfo[3])));
+					g.fillRect(i*20, j*20, 20, 20);
 				}
 			}
 		}
+		if(serverData != null && serverData.startsWith("PLAYER")){
+			String[] playersInfo = serverData.split(":");
+			g.setColor(Color.BLACK);
+			for (int i=0;i<playersInfo.length;i++){
+				String[] playerInfo = playersInfo[i].split(" ");
+				String pname =playerInfo[1];
+				int x = Integer.parseInt(playerInfo[2]);
+				int y = Integer.parseInt(playerInfo[3]);
+				if(x>640) x = 640;
+				if(y>480) y = 480;
+				//draw on the offscreen image
+				//g.drawImage(new ImageIcon("Tank/Tank.png").getImage(),x,y,20,20, this);
+				board.updateBoard(pname+" "+playerInfo[4]+" "+playerInfo[5]+" "+playerInfo[6], x/20, y/20);
+				g.setColor(new Color(Float.valueOf(playerInfo[4]), Float.valueOf(playerInfo[5]), Float.valueOf(playerInfo[6])));
+				g.fillOval(x, y, 20, 20);
+				g.drawString(pname,x-10,y+30);					
+			}
+		}
+		//g.drawImage(offscreen, 0, 0, null);
+	}
+
+	class MouseMotionHandler extends MouseMotionAdapter{
+		public void mouseMoved(MouseEvent me){}
+	}
+	
+	class KeyHandler extends KeyAdapter{
+		public void keyPressed(KeyEvent ke){
+			prevX=x;prevY=y;
+			switch (ke.getKeyCode()){
+				case KeyEvent.VK_DOWN:
+					if(isMove(x/20, (y+yspeed)/20)) y+=yspeed;
+					break;
+				case KeyEvent.VK_UP:
+					if(isMove(x/20, (y-yspeed)/20)) y-=yspeed;
+					break;
+				case KeyEvent.VK_LEFT:
+					if(isMove((x-xspeed)/20, (y)/20)) x-=xspeed;
+					break;
+				case KeyEvent.VK_RIGHT:
+					if(isMove((x+xspeed)/20, (y)/20)) x+=xspeed;
+					break;
+			}
+			if (prevX != x || prevY != y){
+				//board.updateBoard(name, x/20, y/20);
+				send("PLAYER "+name+" "+x+" "+y);
+			}
+		}
+	}
+
+	public boolean isMove(int x, int y){
+		if(board.getBoard()[x][y].equals("0") || board.getBoard()[x][y].length() > 1) return true;
+		return false;
+	}
+
+	public void randomizePlace(){
+		int x = rand.nextInt(640);
+		int y = rand.nextInt(480);
+
+		this.x = x;
+		this.y = y;
+	}
+	
+	public static void main(String args[]) throws Exception{
+		if (args.length != 2){
+			System.out.println("Usage: java -jar circlewars-client <server> <player name>");
+			System.exit(1);
+		}
+
+		new BattleSplix(args[0],args[1]);
 	}
 }
