@@ -3,120 +3,119 @@ import java.net.*;
 
 public class ClientThread extends Thread {
 
-	//Declaration of variables
-	private String clientName = null;
-	private DataInputStream inputStream = null;
-	private PrintStream outputStream = null;
+	private ClientThread[] clientThread;
 	private Socket clientSocket = null;
-	private final ClientThread[] threads;
+	private String clientName = null;
+	private BufferedReader inputStream = null;
+	private PrintStream outputStream = null;
 	private int maxNoOfUsers;
 
-	//Constructor declaration
-	public ClientThread(Socket clientSocket, ClientThread[] threads) {
-		this.clientSocket = clientSocket;
-		this.threads = threads;
-		maxNoOfUsers = threads.length;
- 	}
+	// Constructor for ClientThread
+	public ClientThread(Socket socket, ClientThread[] thread){
+		this.clientSocket = socket;
+		this.clientThread = thread;
+		this.maxNoOfUsers = thread.length;
+	}
 
-	public void run() {
-		int maxNoOfUsers = this.maxNoOfUsers;
-		ClientThread[] threads = this.threads;
+	public void run(){
+		ClientThread[] clients = this.clientThread;
+		int limit = this.maxNoOfUsers;
 
-		//Creating the input and output streams for the client
+		//initialization of input and output stream
 		try {
-			inputStream = new DataInputStream(clientSocket.getInputStream());
+			inputStream = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 			outputStream = new PrintStream(clientSocket.getOutputStream());
+
 			String name;
-			while (true) {
+
+			//Getting the name of the user
+			while (true){
 				outputStream.println("Enter your name: ");
 				name = inputStream.readLine().trim();
-				if (name.indexOf('@') == -1) {
-					break;
-				} else {
- 					outputStream.println("The name should not contain '@' character.");
-				}
-			}
-
-			outputStream.println("----- Welcome " + name + "!\nTo leave, enter \"/quit\". -----");
-
-			//marker to easily identify a user
-			synchronized (this) {
-				for (int i = 0; i < maxNoOfUsers; i++) {
-				if (threads[i] != null && threads[i] == this) {
-					clientName = "@" + name;
-					break;
-				}
-			}
-
-			for (int i = 0; i < maxNoOfUsers; i++) {
-				if (threads[i] != null && threads[i] != this) {
-					threads[i].outputStream.println("----- " + name + " joined the group chat. -----");
-				}
-			}
-		}
-
-		//Getting the message from the user
-		while (true) {
-			String line = inputStream.readLine();
-			if (line.startsWith("/quit")) {	//Checks if the line read is /quit then breaks the loop
 				break;
 			}
 
-			if (line.startsWith("@")) {
-				String[] words = line.split("\\s", 2);
-				
-				if (words.length > 1 && words[1] != null) {
-					words[1] = words[1].trim();
-					
-					if (!words[1].isEmpty()) {
-						synchronized (this) {
-							for (int i = 0; i < maxNoOfUsers; i++) {
-								if (threads[i] != null && threads[i] != this && threads[i].clientName.equals(words[0])) {
-   									threads[i].outputStream.println(name + ": " + words[1]);
-									this.outputStream.println(name + ": " + words[1]);
-									break;
-								}
+			//Prompt that a user has joined
+			outputStream.println("----- Welcome " + name + "! Just enter \"Bye\" to leave the groupchat. -----");
+
+			//Getting the name and modifying it in a way that it starts with @
+			synchronized(this){
+				for (int i = 0; i < limit; i++){
+					if (clients[i] != null && clients[i] == this){
+						clientName = "@" + name;
+						break;
+					}
+				}
+			}
+
+			//Notifying the other clients about the newly joined client
+			synchronized(this){
+				for (int i = 0; i < limit; i++){
+					if (clients[i] != null && clients[i] != this){
+						clients[i].outputStream.println("----- " + name + " joined the groupchat. -----");
+					}
+				}
+			}
+
+			//Getting of input message
+			while (true){
+				String inputLine = inputStream.readLine();
+
+				// This will break the loop or process if the client says bye
+				if (inputLine.startsWith("Bye")){
+					break;
+				}
+
+				if (inputLine.startsWith("@")){
+					String[] words = inputLine.split("\\s", 2);
+
+					if (words.length > 1 && words[1] != null){
+						words[1] = words[1].trim();
+						
+					}
+				} else {
+					//Sending the message to the server to send to other clients
+					synchronized(this){
+						for (int i = 0; i < limit; i++){
+							if (clients[i] != null && clients[i].clientName != null && clients[i] != this){
+								clients[i].outputStream.println(name + ": " + inputLine);
 							}
 						}
 					}
-				}
-			
-			} else {
 
-	  			synchronized (this) {
-	  				for (int i = 0; i < maxNoOfUsers; i++) {
-	  					if (threads[i] != null && threads[i].clientName != null) {
-	  						threads[i].outputStream.println(name + ": " + line);
-	  					}
-	  				}
 				}
 			}
-		}
 
-		//Iterates through all the users and if the user has already left the chat
-		synchronized (this) {
-			for (int i = 0; i < maxNoOfUsers; i++) {
-				if (threads[i] != null && threads[i] != this && threads[i].clientName != null) {
-					threads[i].outputStream.println("----- " + name + " left the group chat. -----");
+			// Reaching this part of the code means that the client has opted to leave the chat
+			synchronized(this){
+				for (int i = 0; i < limit; i++){
+					if (clients[i] != null && clients[i] != this && clients[i].clientName != null){
+						clients[i].outputStream.println("----- " + name + " left the groupchat. -----");
+					}
 				}
 			}
-		}
-		
-		outputStream.println("----- Bye " + name + " -----");
 
-		synchronized (this) {
-			for (int i = 0; i < maxNoOfUsers; i++) {
-				if (threads[i] == this) {
-					threads[i] = null;
+			// This will notify the client that he/she is no longer part of the chat
+			// It will also serve as a flag for the client to break the process
+			outputStream.println("----- Bye " + name + " -----");
+
+			// To remove the client who left from the clients
+			synchronized (this){
+				for (int i = 0; i < limit; i++){
+					if (clients[i] == this){
+						clients[i] = null;
+					}
 				}
 			}
-		}
 
 			inputStream.close();
 			outputStream.close();
 			clientSocket.close();
-		} catch (IOException e) {
+
+		} catch(IOException e){
 			System.out.println(e);
 		}
 	}
 }
+
+/* Referred from: http://makemobiapps.blogspot.com/p/multiple-client-server-chat-programming.html */
