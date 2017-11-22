@@ -184,12 +184,12 @@ public class BattleSplix extends JPanel implements Runnable, BattleSplixConstant
 		this.y = y;
 	}
 	
-	public static void main(String args[]) throws Exception{
+/*	public static void main(String args[]) throws Exception{
 		if (args.length != 2){
 			System.out.println("Usage: java -jar circlewars-client <server> <player name>");
 			System.exit(1);
 		}
 
 		new BattleSplix(args[0],args[1]);
-	}
+	}*/
 }
