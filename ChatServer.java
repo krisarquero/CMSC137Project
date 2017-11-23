@@ -1,66 +1,67 @@
 import java.io.*;
 import java.net.*;
+import java.util.*;
+        
+class ChatServer implements Runnable{
+    public static int portNumber = 12345;
+    public static Socket clientSocket;
+    public static ServerSocket serverSocket;
+    public static Vector clients = new Vector();
 
-public class ChatServer {
+    public ChatServer(Socket socket){
+        try {
+            System.out.println("A new client connection is established...");
+            clientSocket = socket;
+        } catch(Exception e){
+            e.printStackTrace();
+        }
+    }
 
-	// Initialization of class attributes
-	private static final int maxNoOfUsers = 10;
-	private static final ClientThread[] threads = new ClientThread[maxNoOfUsers];
-	private static ServerSocket serverSocket = null;
-	private static Socket clientSocket = null;
+    public static void main(String argv[]) throws Exception{
 
-	public static void main(String args[]){
-		int portNumber = 12345;
+        System.out.println("Chat server running on port: " + portNumber + "...");
 
-		// Checks if the user provided a port number for the server
-		if (args.length > 0){
-			portNumber = Integer.parseInt(args[0]);
-		} else {
-			System.out.println("Please provide a port number. [Port Number Range: 0 to 65535]");
-		}
+        try {
+            serverSocket = new ServerSocket(portNumber);
+        } catch(Exception e){
+            e.printStackTrace();
+        }
+        
+        while (true){
 
-		System.out.println("Port Number in use: " + portNumber);
-		// Checks if the provided port number is valid
-		if (portNumber >= 0 && portNumber <= 65535){
-			// Opens server socket
-			try {
-				serverSocket = new ServerSocket(portNumber);
-			} catch(IOException e){
-				System.out.println("An error occured while opening the server socket.");
-			}
-		} else {
-			System.out.println("Invalid port number. [Valid Port Number Range: 0 to 65535]");
-		}
+            try {
+                clientSocket = serverSocket.accept();
+                ChatServer server = new ChatServer(clientSocket);
+                Thread serverThread = new Thread(server);
+                serverThread.start();
+            } catch(Exception e){
+                e.printStackTrace();
+            }
+        }
+    }
 
-		// This where the connection between the server and clients happen
-		while (true){
-			try {
+    public void run(){
+        try {
+            BufferedReader inputStream = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+            BufferedWriter outputStream= new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()));
+            clients.add(outputStream);
 
-				// The server tries to accept a client request
-				clientSocket = serverSocket.accept();
-				int i = 0;
+            while(true){
+                String clientMessage = inputStream.readLine().trim();
 
-				// Adds the client to the client thread
-				for (i = 0; i < maxNoOfUsers; i++){
-					if (threads[i] == null){
-						(threads[i] = new ClientThread(clientSocket, threads)).start();
-						break;
-					}
-				}
-
-				// If the maximum number of users is reached, the exceeding will be ignored
-				if (i == maxNoOfUsers){
-					PrintStream outputStream = new PrintStream(clientSocket.getOutputStream());
-					outputStream.println("Server overload...");
-					outputStream.close();
-					clientSocket.close();
-				}
-
-			} catch(IOException e) {
-				System.out.println("An error occured while waiting for a connection.");
-			}
-		}
-	}
+                for (int i = 0; i < clients.size(); i++){
+                    try {
+                        BufferedWriter writer= (BufferedWriter)clients.get(i);
+                        writer.write(clientMessage);
+                        writer.write("\r\n");
+                        writer.flush();
+                    } catch(Exception e){
+                        e.printStackTrace();
+                    }
+                }
+            }
+        } catch(Exception e){
+            e.printStackTrace();
+        }
+    }
 }
-
-/* Referred from: http://makemobiapps.blogspot.com/p/multiple-client-server-chat-programming.html */
