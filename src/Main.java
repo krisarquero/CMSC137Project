@@ -7,11 +7,14 @@ import java.net.*;
 public class Main extends JFrame{
 	private static JPanel cards = new JPanel();
 	private static JLabel quit;
+	String name ="anne";
+	String ipadd ="10.0.52.132";
 
 	public Main() throws Exception{
 
 		cards.setLayout(new CardLayout());
 		cards.add(new Menu(), "Play");
+		//cards.add(new BattleSplix(ipadd,name), "Start");
 		cards.add(new About(), "About");
 		cards.add(new Help(), "Help");
 		cards.setOpaque(false);
@@ -43,6 +46,7 @@ public class Main extends JFrame{
 
 class Menu extends JPanel implements MouseListener{
 		private JPanel play = new JPanel();
+		private JPanel start = new JPanel();
 		private JPanel about = new JPanel();
 		private JPanel help = new JPanel();
 		private JPanel quit = new JPanel();
@@ -76,10 +80,12 @@ class Menu extends JPanel implements MouseListener{
 			quit.add(new JLabel(new ImageIcon(img)));
 			
 			play.setOpaque(false);
+			start.setOpaque(false);
 			about.setOpaque(false);
 			help.setOpaque(false);
 			quit.setOpaque(false);
 		
+			//start.addMouseListener(this);
 			play.addMouseListener(this);
 			about.addMouseListener(this);
 			help.addMouseListener(this);
@@ -132,6 +138,7 @@ class Menu extends JPanel implements MouseListener{
 			CardLayout cardLayout = (CardLayout)Main.getCards().getLayout();
 		    
 		    if(me.getSource() == play){
+		    	cardLayout.show(Main.getCards(),"Play");
 		    }
 			if(me.getSource() == about){
 				cardLayout.show(Main.getCards(), "About");

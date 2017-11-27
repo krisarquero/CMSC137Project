@@ -13,7 +13,7 @@ public class Help extends JPanel implements MouseListener{
 	
 		this.setLayout(null);
 		
-		image = new ImageIcon("graphics/back.png");
+		image = new ImageIcon("graphics/return.png");
 		img = Menu.resizeImage(image, 50, 50);
 		back.add(new JLabel(new ImageIcon(img)));
 		back.setBounds(10, 10, 60, 60);
@@ -21,7 +21,7 @@ public class Help extends JPanel implements MouseListener{
 		back.setOpaque(false);
 		add(back);
 		
-		image = new ImageIcon("graphics/help.png");
+		image = new ImageIcon("graphics/background.png");
 		img = image.getImage();
 		img = Menu.resizeImage(image, 800, 600);
 		JLabel background = new JLabel();
