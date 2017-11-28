@@ -10,9 +10,8 @@ public class Help extends JPanel implements MouseListener{
 	private Image img;
 	
 	public Help(){
-	
 		this.setLayout(null);
-		
+
 		image = new ImageIcon("graphics/return.png");
 		img = Menu.resizeImage(image, 50, 50);
 		back.add(new JLabel(new ImageIcon(img)));

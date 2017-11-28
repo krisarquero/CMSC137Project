@@ -16,6 +16,10 @@ import java.util.Arrays;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+import java.util.*;
 
 public class BattleSplix extends JPanel implements Runnable, BattleSplixConstants{
 	Board board = new Board(32, 30);
@@ -36,20 +40,25 @@ public class BattleSplix extends JPanel implements Runnable, BattleSplixConstant
 		this.server=server;
 		this.name=name;
 		
-		frame.setTitle(APP_NAME+":"+name);
+		//frame.setTitle(APP_NAME+":"+name);
 		socket.setSoTimeout(100);
 
 		this.randomizePlace();
 		//GUI
-		frame.getContentPane().add(this);
+	/*	frame.getContentPane().add(this);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setSize(640, 480);
-		frame.setVisible(true);
+		frame.setVisible(true);*/
+
+		setPreferredSize(new Dimension(800,600));
 		
-		offscreen=(BufferedImage)this.createImage(600, 600);
+		offscreen=(BufferedImage)this.createImage(600, 600); //para san ba itu ??
 	
-		frame.addKeyListener(new KeyHandler());		
-		frame.addMouseMotionListener(new MouseMotionHandler());
+		// frame.addKeyListener(new KeyHandler());		
+		// frame.addMouseMotionListener(new MouseMotionHandler());
+
+		this.addKeyListener(new KeyHandler());		
+		this.addMouseMotionListener(new MouseMotionHandler());
 
 		t.start();		
 	}
