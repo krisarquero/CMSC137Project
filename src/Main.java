@@ -7,14 +7,13 @@ import java.net.*;
 public class Main extends JFrame{
 	private static JPanel cards = new JPanel();
 	private static JLabel quit;
-	String name ="anne";
-	String ipadd ="10.0.52.132";
+
 
 	public Main() throws Exception{
 
 		cards.setLayout(new CardLayout());
 		cards.add(new Menu(), "Play");
-		//cards.add(new BattleSplix(ipadd,name), "Start");
+		cards.add(new BattleSplix(Menu.ipadd,Menu.name), "Start");
 		cards.add(new About(), "About");
 		cards.add(new Help(), "Help");
 		cards.setOpaque(false);
@@ -29,6 +28,16 @@ public class Main extends JFrame{
 	}
 	public static JPanel getCards(){
 		return cards;
+	}
+
+	public static void updateCards() throws Exception{
+		cards.removeAll();
+		cards.setLayout(new CardLayout());
+		cards.add(new Menu(), "Play");
+		cards.add(new BattleSplix(Menu.ipadd,Menu.name), "Start");
+		cards.add(new About(), "About");
+		cards.add(new Help(), "Help");
+		cards.setOpaque(false);
 	}
 
 	public static void main(String args[]) throws Exception{
@@ -50,7 +59,11 @@ class Menu extends JPanel implements MouseListener{
 		private JPanel about = new JPanel();
 		private JPanel help = new JPanel();
 		private JPanel quit = new JPanel();
-		private JPanel menu = new JPanel();	
+		private JPanel menu = new JPanel();
+
+		static String name="";
+		static String ipadd="";
+	
 
 		public Menu(){
 			setLayout(null);
@@ -110,8 +123,15 @@ class Menu extends JPanel implements MouseListener{
 		public static Image resizeImage(ImageIcon img, int width, int height){
 			return (img.getImage().getScaledInstance(width, height,  java.awt.Image.SCALE_SMOOTH));
 		}
-		
-		public void mouseExited(MouseEvent me){
+
+/*		public static String getName(){
+		return name;
+		}
+
+		public static String getIpadd(){
+		return ipadd;
+		}
+*/		public void mouseExited(MouseEvent me){
 			if(me.getSource() == play){
 				ImageIcon image = new ImageIcon("graphics/buttonPlay.png");
 				Image img = resizeImage(image, 150, 70);
@@ -136,9 +156,17 @@ class Menu extends JPanel implements MouseListener{
 	
 		public void mouseClicked(MouseEvent me){
 			CardLayout cardLayout = (CardLayout)Main.getCards().getLayout();
+			JFrame frame = new JFrame();
 		    
 		    if(me.getSource() == play){
-		    	cardLayout.show(Main.getCards(),"Play");
+		    	//cardLayout.show(Main.getCards(),"Play");
+		    	name = JOptionPane.showInputDialog(frame, "Please enter name:", "lodicakes");
+				ipadd= JOptionPane.showInputDialog(frame, "Please enter ip address:", "1.1.1.1");
+				try{
+					Main.updateCards();
+				}catch(Exception e){}
+				cardLayout = (CardLayout)Main.getCards().getLayout();
+				cardLayout.show(Main.getCards(), "Start");
 		    }
 			if(me.getSource() == about){
 				cardLayout.show(Main.getCards(), "About");
