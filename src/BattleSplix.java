@@ -33,6 +33,10 @@ public class BattleSplix extends JPanel implements Runnable, BattleSplixConstant
 
 
 	public BattleSplix(String server,String name) throws Exception{
+
+		// UI Layer Indicator
+		System.out.println("BattleSplix Panel Level");
+
 		this.server=server;
 		this.name=name;
 		
@@ -40,17 +44,19 @@ public class BattleSplix extends JPanel implements Runnable, BattleSplixConstant
 		socket.setSoTimeout(100);
 
 		this.randomizePlace();
+
 		//GUI
-		frame.getContentPane().add(this);
+/*		frame.getContentPane().add(this);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setSize(640, 480);
-		frame.setVisible(true);
+		frame.setVisible(true);*/
 		
 		offscreen=(BufferedImage)this.createImage(600, 600);
 	
-		frame.addKeyListener(new KeyHandler());		
-		frame.addMouseMotionListener(new MouseMotionHandler());
-
+		this.addKeyListener(new KeyHandler());		
+		this.addMouseMotionListener(new MouseMotionHandler());
+		this.setFocusable(true);
+		this.requestFocus();
 		t.start();		
 	}
 	
@@ -80,7 +86,7 @@ public class BattleSplix extends JPanel implements Runnable, BattleSplixConstant
 			serverData=new String(buf);
 			serverData=serverData.trim();
 			
-			//Study the following kids. 
+			//Connection indicator via terminal 
 			if (!connected && serverData.startsWith("CONNECTED")){
 				connected=true;
 				System.out.println("Connected.");
@@ -184,7 +190,7 @@ public class BattleSplix extends JPanel implements Runnable, BattleSplixConstant
 		this.y = y;
 	}
 	
-	public static void main(String args[]) throws Exception{
+/*	public static void main(String args[]) throws Exception{
 		if (args.length != 2){
 			System.out.println("Usage: java -jar circlewars-client <server> <player name>");
 			System.exit(1);
@@ -192,4 +198,5 @@ public class BattleSplix extends JPanel implements Runnable, BattleSplixConstant
 
 		new BattleSplix(args[0],args[1]);
 	}
+*/
 }
