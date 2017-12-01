@@ -228,14 +228,15 @@ public class BattleSplix extends JPanel implements Runnable, BattleSplixConstant
 		String retval="";
 		for(Iterator ite=players.keySet().iterator();ite.hasNext();){
 			String name=(String)ite.next();
-			retval+= name+": "+ Integer.toString((int)players.get(name));
-			retval+="   \n";
+			retval+= "<html> "+name+": "+ Integer.toString((int)players.get(name))+"<br> <html>";
+			status.setFont(status.getFont().deriveFont(32f)); 
+			status.setText(retval);
+			stats.add(status);
 		}
 
 		// int x = rand.nextInt(640);
 		// System.out.println(x);
-		status.setText(retval);
-		stats.add(status);
+
 	}
 	
 	public static void main(String args[]) throws Exception{
