@@ -12,14 +12,22 @@ import java.net.InetAddress;
 import java.awt.Color;
 import java.util.Random;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Iterator;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.BoxLayout;
+import javax.swing.JLabel;
 
 public class BattleSplix extends JPanel implements Runnable, BattleSplixConstants{
 	Board board = new Board(32, 30);
 	JFrame frame= new JFrame();
+	JPanel stats = new JPanel();
+	JLabel status = new JLabel("");
+	JPanel container = new JPanel();
 	int x,y,xspeed=5,yspeed=5,prevX,prevY;
 	Thread t=new Thread(this);
 	String name="Ronald";
@@ -35,22 +43,30 @@ public class BattleSplix extends JPanel implements Runnable, BattleSplixConstant
 	public BattleSplix(String server,String name) throws Exception{
 		this.server=server;
 		this.name=name;
-		
+		container.setLayout(new BoxLayout(container, BoxLayout.Y_AXIS));
 		frame.setTitle(APP_NAME+":"+name);
 		socket.setSoTimeout(100);
 
 		this.randomizePlace();
 		//GUI
-		frame.getContentPane().add(this);
+		container.add(this);
+		container.add(stats);
+		//stats.setBackground(Color.BLACK);
+		//frame.getContentPane().add(stats);
+		//frame.getContentPane().add(this);
+		frame.getContentPane().add(container);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setSize(640, 480);
+		frame.pack();
+		frame.setSize(600, 680);
 		frame.setVisible(true);
 		
+
 		offscreen=(BufferedImage)this.createImage(600, 600);
 	
-		frame.addKeyListener(new KeyHandler());		
-		frame.addMouseMotionListener(new MouseMotionHandler());
-
+		this.addKeyListener(new KeyHandler());		
+		this.addMouseMotionListener(new MouseMotionHandler());
+		this.setFocusable(true);
+		this.requestFocus();
 		t.start();		
 	}
 	
@@ -98,23 +114,29 @@ public class BattleSplix extends JPanel implements Runnable, BattleSplixConstant
 	 */
 	public void paintComponent(Graphics g){
 		//g.setColor(Color.RED);
+		this.updateStats();
 		String[][] brd = board.getBoard();
 		for(int i = 0; i<30; i++){
 			for(int j=0; j<30; j++){
 				if(brd[i][j].length()==1){
-					switch(Integer.parseInt(brd[i][j])){
-						case BRICKLESS:
-							break;
-						case BRICK:
-							g.drawImage(new ImageIcon("Block/brick.png").getImage(),i*20,j*20,20,20, this);
-							break;
-						case METAL:
-							g.drawImage(new ImageIcon("Block/metal.png").getImage(),i*20,j*20,20,20, this);
-							break;
-						case VINE:
-							g.drawImage(new ImageIcon("Block/vine.png").getImage(),i*20,j*20,20,20, this);
-							break;
-					}
+					//switch(Integer.parseInt(brd[i][j])){
+					//	case BRICKLESS:
+							g.setColor(Color.WHITE);
+							g.fillRect(i*20, j*20, 20, 20);
+							g.setColor(Color.BLACK);
+							g.fillRect(i*20, j*20, 19, 19);
+
+					//		break;
+						// case BRICK:
+						// 	g.drawImage(new ImageIcon("Block/brick.png").getImage(),j*20,i*20,20,20, this);
+						// 	break;
+						// case METAL:
+						// 	g.drawImage(new ImageIcon("Block/metal.png").getImage(),j*20,i*20,20,20, this);
+						// 	break;
+						// case VINE:
+						// 	g.drawImage(new ImageIcon("Block/vine.png").getImage(),j*20,i*20,20,20, this);
+						// 	break;
+					//}
 				}else{
 					String[] tileInfo = brd[i][j].split(" ");
 					g.setColor(new Color(Float.valueOf(tileInfo[1]), Float.valueOf(tileInfo[2]), Float.valueOf(tileInfo[3])));
@@ -152,7 +174,7 @@ public class BattleSplix extends JPanel implements Runnable, BattleSplixConstant
 			prevX=x;prevY=y;
 			switch (ke.getKeyCode()){
 				case KeyEvent.VK_DOWN:
-					if(isMove(x/20, (y+yspeed)/20)) y+=yspeed;
+					if(isMove(x/20, (y+yspeed)/20) && y+yspeed<480) y+=yspeed;
 					break;
 				case KeyEvent.VK_UP:
 					if(isMove(x/20, (y-yspeed)/20)) y-=yspeed;
@@ -173,20 +195,52 @@ public class BattleSplix extends JPanel implements Runnable, BattleSplixConstant
 
 	public boolean isMove(int x, int y){
 		if(board.getBoard()[x][y].equals("0") || board.getBoard()[x][y].length() > 1) return true;
-		return false;
+		return true;
 	}
 
 	public void randomizePlace(){
-		int x = rand.nextInt(640);
-		int y = rand.nextInt(480);
+		boolean b = true;
+		while(b){
+			int x = rand.nextInt(640);
+			int y = rand.nextInt(480);
+			if(board.getBoard()[x/20][y/20].equals("0")) b = false;
+		}
 
 		this.x = x;
 		this.y = y;
 	}
+
+	public void updateStats(){
+		Map players = new HashMap();
+		String[][] brd = board.getBoard();
+		for(int i = 0; i<30; i++){
+			for(int j=0; j<30; j++){
+				if(brd[i][j].length()!=1){
+					String[] tileInfo = brd[i][j].split(" ");
+					if(!players.containsKey(tileInfo[0])){ players.put(tileInfo[0], 1); }
+					else{
+						int temp = (int)players.get(tileInfo[0]);
+						players.replace(tileInfo[0], temp+1);
+					}
+				}
+			}
+		}
+		String retval="";
+		for(Iterator ite=players.keySet().iterator();ite.hasNext();){
+			String name=(String)ite.next();
+			retval+= name+": "+ Integer.toString((int)players.get(name));
+			retval+="   \n";
+		}
+
+		// int x = rand.nextInt(640);
+		// System.out.println(x);
+		status.setText(retval);
+		stats.add(status);
+	}
 	
 	public static void main(String args[]) throws Exception{
 		if (args.length != 2){
-			System.out.println("Usage: java -jar circlewars-client <server> <player name>");
+			//System.out.println("Usage: java -jar circlewars-client <server> <player name>");
 			System.exit(1);
 		}
 

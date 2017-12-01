@@ -113,7 +113,7 @@ public class BattleSplixServer implements Runnable, BattleSplixConstants{
 	
 	public static void main(String args[]){
 		if (args.length != 1){
-			System.out.println("Usage: java -jar circlewars-server <number of players>");
+			//System.out.println("Usage: java -jar circlewars-server <number of players>");
 			System.exit(1);
 		}
 		

@@ -1,5 +1,5 @@
 public interface BattleSplixConstants {
-	public static final String APP_NAME="Circle Wars 0.01";
+	public static final String APP_NAME="Battle Splix 0.01";
 	
 	/**
 	 * Game states.
