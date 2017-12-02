@@ -172,7 +172,7 @@ public class BattleSplix extends JPanel implements Runnable, BattleSplixConstant
 				//g.drawImage(new ImageIcon("Tank/Tank.png").getImage(),x,y,20,20, this);
 				board.updateBoard(pname+" "+playerInfo[4]+" "+playerInfo[5]+" "+playerInfo[6], x/20, y/20);
 				g.setColor(new Color(Float.valueOf(playerInfo[4]), Float.valueOf(playerInfo[5]), Float.valueOf(playerInfo[6])));
-				g.fillOval(x, y, 20, 20);
+				//g.fillOval(x, y, 18, 18);
 				g.drawString(pname,(x-10)>0?x-10:x,(y+30)<600?y+30:y-30);					
 			}
 		}
