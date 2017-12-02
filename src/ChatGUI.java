@@ -7,8 +7,8 @@ import java.net.*;
 
 public class ChatGUI extends JPanel implements Runnable{
 
-  public static Socket clientSocket;
-  public static int portNumber = 12345;
+    public static Socket clientSocket;
+    public static int portNumber = 12345;
     public String clientName = "Werpa Pu";
     public String inetAddress = "localhost";
     public BufferedWriter outputStream;
@@ -27,10 +27,12 @@ public class ChatGUI extends JPanel implements Runnable{
         sendButton.setBackground(Color.black);
         sendButton.setForeground(Color.white);
 
-        textArea = new JTextArea();
+        textArea = new JTextArea(0, 21);
+        textArea.setBackground(Color.BLACK);
+        textArea.setForeground(Color.WHITE);
+        textArea.setEditable(false);
+        textArea.setLineWrap(true);
         textField = new JTextField();
-        textArea.append("[BATTLESPLIX CHAT BOX]\n");
-        textArea.append("");
 
         panel1.setLayout(new BorderLayout());
         panel1.add(textField, BorderLayout.CENTER);
@@ -61,7 +63,15 @@ public class ChatGUI extends JPanel implements Runnable{
                     }catch(Exception e){e.printStackTrace();}
             }
           }
-        );  
+        );
+        
+        textField.addKeyListener(new KeyAdapter() {
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode()==KeyEvent.VK_ENTER) {
+                    sendButton.doClick();
+                }
+            }
+        });
     }
 
     public void run(){
@@ -69,7 +79,7 @@ public class ChatGUI extends JPanel implements Runnable{
             String message = inputStream.readLine();
             while(message != null){
                 System.out.println(message);
-                textArea.append(message+"\n");
+                textArea.append(" "+message+"\n");
                 message = inputStream.readLine(); 
             }
         } catch(Exception e){
