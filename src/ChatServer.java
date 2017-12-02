@@ -2,7 +2,7 @@ import java.io.*;
 import java.net.*;
 import java.util.*;
         
-public class ChatServer implements Runnable{
+class ChatServer implements Runnable{
     public static int portNumber = 12345;
     public static Socket clientSocket;
     public static ServerSocket serverSocket;

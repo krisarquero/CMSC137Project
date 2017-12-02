@@ -50,27 +50,30 @@ public class BattleSplix extends JPanel implements Runnable, BattleSplixConstant
 
 		this.randomizePlace();
 		//GUI
-		stats.setPreferredSize(new Dimension(300,600));
+		stats.setPreferredSize(new Dimension(200,600));
 		container.add(this, BorderLayout.CENTER);
 		container.add(stats, BorderLayout.WEST);
 		//stats.setBackground(Color.BLACK);
 		//frame.getContentPane().add(stats);
 		//frame.getContentPane().add(this);
-		frame.getContentPane().add(container);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.pack();
-		frame.setResizable(false);
-		frame.setSize(940, 600);
-		frame.setVisible(true);
+		// frame.getContentPane().add(container);
+		// frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		// frame.pack();
+		// frame.setResizable(false);
+		// frame.setSize(940, 600);
+		// frame.setVisible(true);
 		
-
 		offscreen=(BufferedImage)this.createImage(600, 600);
 	
 		this.addKeyListener(new KeyHandler());		
 		this.addMouseMotionListener(new MouseMotionHandler());
 		this.setFocusable(true);
 		this.requestFocus();
-		t.start();		
+		t.start();
+	}
+
+	public JPanel getContainer(){
+		return this.container;
 	}
 	
 	public void send(String msg){
@@ -99,7 +102,7 @@ public class BattleSplix extends JPanel implements Runnable, BattleSplixConstant
 			serverData=new String(buf);
 			serverData=serverData.trim();
 			
-			//Study the following kids. 
+			//Connection indicator via terminal 
 			if (!connected && serverData.startsWith("CONNECTED")){
 				connected=true;
 				System.out.println("Connected.");
@@ -231,7 +234,7 @@ public class BattleSplix extends JPanel implements Runnable, BattleSplixConstant
 		for(Iterator ite=players.keySet().iterator();ite.hasNext();){
 			String name=(String)ite.next();
 			retval+= "<html> "+name+": "+ Integer.toString((int)players.get(name))+"<br> <html>";
-			status.setFont(status.getFont().deriveFont(32f)); 
+			status.setFont(status.getFont().deriveFont(16f)); 
 			status.setText(retval);
 			stats.add(status);
 		}
@@ -241,12 +244,12 @@ public class BattleSplix extends JPanel implements Runnable, BattleSplixConstant
 
 	}
 	
-	public static void main(String args[]) throws Exception{
-		if (args.length != 2){
-			//System.out.println("Usage: java -jar circlewars-client <server> <player name>");
-			System.exit(1);
-		}
+	// public static void main(String args[]) throws Exception{
+	// 	if (args.length != 2){
+	// 		//System.out.println("Usage: java -jar circlewars-client <server> <player name>");
+	// 		System.exit(1);
+	// 	}
 
-		new BattleSplix(args[0],args[1]);
-	}
+	// 	new BattleSplix(args[0],args[1]);
+	// }
 }
