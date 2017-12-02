@@ -69,7 +69,14 @@ public class BattleSplix extends JPanel implements Runnable, BattleSplixConstant
 		this.addMouseMotionListener(new MouseMotionHandler());
 		this.setFocusable(true);
 		this.requestFocus();
-		t.start();
+		//t.start();
+	}
+
+	public void doAll(){
+		this.addKeyListener(new KeyHandler());		
+		this.addMouseMotionListener(new MouseMotionHandler());
+		this.setFocusable(true);
+		this.requestFocus();
 	}
 
 	public JPanel getContainer(){
@@ -88,6 +95,8 @@ public class BattleSplix extends JPanel implements Runnable, BattleSplixConstant
 	
 	public void run(){
 		while(true){
+			this.setFocusable(true);
+		this.requestFocus();
 			try{
 				Thread.sleep(1);
 			}catch(Exception ioe){}
@@ -110,7 +119,7 @@ public class BattleSplix extends JPanel implements Runnable, BattleSplixConstant
 				System.out.println("Connecting..");				
 				send("CONNECT "+name);
 			}else if (connected){
-				frame.repaint();				
+				repaint();				
 			}			
 		}
 	}

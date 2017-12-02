@@ -4,6 +4,9 @@ import java.awt.event.*;
 import java.util.*;
 import java.io.*;
 import java.net.*;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
 public class GamePanel extends JPanel implements MouseListener{
 	private static String inetAdd = "Werpa Pu";
@@ -15,6 +18,7 @@ public class GamePanel extends JPanel implements MouseListener{
 		this.inetAdd = inetAdd;
 		this.clientName = clientName;
 		
+		this.setPreferredSize(new Dimension(600, 640));
 		// UI Layer Indicator
 		System.out.println("Game Panel Level");
 
@@ -45,9 +49,13 @@ public class GamePanel extends JPanel implements MouseListener{
 
 		try {
 			BattleSplix bs = new BattleSplix(inetAdd, clientName);
+			bs.setPreferredSize(new Dimension(600, 640));
+			Thread board = new Thread(bs);
 			this.add(bs.getContainer(), BorderLayout.CENTER);
+			bs.doAll();
 			bs.setFocusable(true);
-			bs.requestFocus();
+			bs.requestFocusInWindow();
+			board.start();
 		} catch(Exception e){
 			System.out.println(e.getMessage());
 		}
