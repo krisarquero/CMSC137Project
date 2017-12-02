@@ -11,7 +11,7 @@ public interface BattleSplixConstants {
 
 	//Board Specifications
 	public final static int BOARD_WIDTH = 640;
-	public final static int BOARD_HEIGHT = 480;
+	public final static int BOARD_HEIGHT = 600;
 	public final static int BLOCK_WIDTH = 20;
 	public final static int BLOCK_HEIGHT = 20;
 

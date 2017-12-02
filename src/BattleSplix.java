@@ -19,7 +19,8 @@ import java.util.Iterator;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.BoxLayout;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
 import javax.swing.JLabel;
 
 public class BattleSplix extends JPanel implements Runnable, BattleSplixConstants{
@@ -43,21 +44,23 @@ public class BattleSplix extends JPanel implements Runnable, BattleSplixConstant
 	public BattleSplix(String server,String name) throws Exception{
 		this.server=server;
 		this.name=name;
-		container.setLayout(new BoxLayout(container, BoxLayout.Y_AXIS));
+		container.setLayout(new BorderLayout());
 		frame.setTitle(APP_NAME+":"+name);
 		socket.setSoTimeout(100);
 
 		this.randomizePlace();
 		//GUI
-		container.add(this);
-		container.add(stats);
+		stats.setPreferredSize(new Dimension(300,600));
+		container.add(this, BorderLayout.CENTER);
+		container.add(stats, BorderLayout.WEST);
 		//stats.setBackground(Color.BLACK);
 		//frame.getContentPane().add(stats);
 		//frame.getContentPane().add(this);
 		frame.getContentPane().add(container);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.pack();
-		frame.setSize(600, 680);
+		frame.setResizable(false);
+		frame.setSize(940, 600);
 		frame.setVisible(true);
 		
 
@@ -116,31 +119,30 @@ public class BattleSplix extends JPanel implements Runnable, BattleSplixConstant
 		//g.setColor(Color.RED);
 		this.updateStats();
 		String[][] brd = board.getBoard();
-		for(int i = 0; i<30; i++){
+		for(int i = 0; i<32; i++){
 			for(int j=0; j<30; j++){
 				if(brd[i][j].length()==1){
-					//switch(Integer.parseInt(brd[i][j])){
-					//	case BRICKLESS:
-							g.setColor(Color.WHITE);
-							g.fillRect(i*20, j*20, 20, 20);
+					g.setColor(Color.GRAY);
+					g.fillRect(i*20, j*20, 20, 20);
+					switch(Integer.parseInt(brd[i][j])){
+						case BRICKLESS:
 							g.setColor(Color.BLACK);
 							g.fillRect(i*20, j*20, 19, 19);
-
-					//		break;
-						// case BRICK:
-						// 	g.drawImage(new ImageIcon("Block/brick.png").getImage(),j*20,i*20,20,20, this);
-						// 	break;
-						// case METAL:
-						// 	g.drawImage(new ImageIcon("Block/metal.png").getImage(),j*20,i*20,20,20, this);
-						// 	break;
-						// case VINE:
-						// 	g.drawImage(new ImageIcon("Block/vine.png").getImage(),j*20,i*20,20,20, this);
-						// 	break;
-					//}
+							break;
+						 case BRICK:
+							g.drawImage(new ImageIcon("Block/brick.png").getImage(),i*20,j*20,19,19, this);
+							break;
+						case METAL:
+							g.drawImage(new ImageIcon("Block/metal.png").getImage(),i*20,j*20,19,19, this);
+							break;
+						case VINE:
+							g.drawImage(new ImageIcon("Block/vine.png").getImage(),i*20,j*20,19,19, this);
+							break;
+					}
 				}else{
 					String[] tileInfo = brd[i][j].split(" ");
 					g.setColor(new Color(Float.valueOf(tileInfo[1]), Float.valueOf(tileInfo[2]), Float.valueOf(tileInfo[3])));
-					g.fillRect(i*20, j*20, 20, 20);
+					g.fillRect(i*20, j*20, 18, 18);
 				}
 			}
 		}
@@ -153,13 +155,13 @@ public class BattleSplix extends JPanel implements Runnable, BattleSplixConstant
 				int x = Integer.parseInt(playerInfo[2]);
 				int y = Integer.parseInt(playerInfo[3]);
 				if(x>640) x = 640;
-				if(y>480) y = 480;
+				if(y>600) y = 600;
 				//draw on the offscreen image
 				//g.drawImage(new ImageIcon("Tank/Tank.png").getImage(),x,y,20,20, this);
 				board.updateBoard(pname+" "+playerInfo[4]+" "+playerInfo[5]+" "+playerInfo[6], x/20, y/20);
 				g.setColor(new Color(Float.valueOf(playerInfo[4]), Float.valueOf(playerInfo[5]), Float.valueOf(playerInfo[6])));
 				g.fillOval(x, y, 20, 20);
-				g.drawString(pname,x-10,y+30);					
+				g.drawString(pname,(x-10)>0?x-10:x,(y+30)<600?y+30:y-30);					
 			}
 		}
 		//g.drawImage(offscreen, 0, 0, null);
@@ -174,16 +176,16 @@ public class BattleSplix extends JPanel implements Runnable, BattleSplixConstant
 			prevX=x;prevY=y;
 			switch (ke.getKeyCode()){
 				case KeyEvent.VK_DOWN:
-					if(isMove(x/20, (y+yspeed)/20) && y+yspeed<480) y+=yspeed;
+					if(isMove(x/20, (y+yspeed)/20) && y+yspeed<600) y+=yspeed;
 					break;
 				case KeyEvent.VK_UP:
-					if(isMove(x/20, (y-yspeed)/20)) y-=yspeed;
+					if(isMove(x/20, (y-yspeed)/20) && y-yspeed>0) y-=yspeed;
 					break;
 				case KeyEvent.VK_LEFT:
-					if(isMove((x-xspeed)/20, (y)/20)) x-=xspeed;
+					if(isMove((x-xspeed)/20, (y)/20) && x-xspeed>0) x-=xspeed;
 					break;
 				case KeyEvent.VK_RIGHT:
-					if(isMove((x+xspeed)/20, (y)/20)) x+=xspeed;
+					if(isMove((x+xspeed)/20, (y)/20) && x+xspeed<640) x+=xspeed;
 					break;
 			}
 			if (prevX != x || prevY != y){
@@ -194,17 +196,17 @@ public class BattleSplix extends JPanel implements Runnable, BattleSplixConstant
 	}
 
 	public boolean isMove(int x, int y){
-		if(board.getBoard()[x][y].equals("0") || board.getBoard()[x][y].length() > 1) return true;
-		return true;
+		if((x<32 && y<30) && (board.getBoard()[x][y].equals("0") || board.getBoard()[x][y].length() > 1)) return true;
+		return false;
 	}
 
 	public void randomizePlace(){
-		boolean b = true;
-		while(b){
+		// boolean b = true;
+		// while(b){
 			int x = rand.nextInt(640);
-			int y = rand.nextInt(480);
-			if(board.getBoard()[x/20][y/20].equals("0")) b = false;
-		}
+			int y = rand.nextInt(600);
+		// 	if(board.getBoard()[x/20][y/20].equals("0")) b = false;
+		// }
 
 		this.x = x;
 		this.y = y;
@@ -213,7 +215,7 @@ public class BattleSplix extends JPanel implements Runnable, BattleSplixConstant
 	public void updateStats(){
 		Map players = new HashMap();
 		String[][] brd = board.getBoard();
-		for(int i = 0; i<30; i++){
+		for(int i = 0; i<32; i++){
 			for(int j=0; j<30; j++){
 				if(brd[i][j].length()!=1){
 					String[] tileInfo = brd[i][j].split(" ");

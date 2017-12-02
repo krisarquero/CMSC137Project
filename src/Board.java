@@ -70,23 +70,25 @@ public class Board implements BattleSplixConstants{
 		int x =0 ,y=0, h = BOARD_HEIGHT/BLOCK_HEIGHT, w = BOARD_WIDTH/BLOCK_WIDTH;
 		Tile s;
 
+		System.out.println(board.length);
+
 		for(int j=0;j<this.board.length;j++){
-			y = j % h;
+			//y = j % h;
 			for(int i=0;i<this.board[0].length;i++){
-				x = i%w;
+				//x = i%w;
 				switch(Integer.parseInt(board[j][i])){
 					case BRICK:
-							s = new Tile(x*BLOCK_HEIGHT,y*BLOCK_WIDTH,BLOCK_HEIGHT,BLOCK_WIDTH,BRICK);
+							s = new Tile(j,i,BLOCK_HEIGHT,BLOCK_WIDTH,BRICK);
 							temp.add(s);
 							//s.sprite.start();
 							break;
 					case VINE:
-							s = new Tile(x*BLOCK_HEIGHT,y*BLOCK_WIDTH,BLOCK_HEIGHT,BLOCK_WIDTH,VINE);
+							s = new Tile(j,i,BLOCK_HEIGHT,BLOCK_WIDTH,VINE);
 							temp.add(s);
 							//s.sprite.start();
 							break;
 					case METAL:
-							s = new Tile(x*BLOCK_HEIGHT,y*BLOCK_WIDTH,BLOCK_HEIGHT,BLOCK_WIDTH,METAL);
+							s = new Tile(j,i,BLOCK_HEIGHT,BLOCK_WIDTH,METAL);
 							temp.add(s);
 							break;
 				}
