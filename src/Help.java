@@ -23,11 +23,11 @@ public class Help extends JPanel implements MouseListener{
 		
 		image = new ImageIcon("graphics/background.png");
 		img = image.getImage();
-		img = Menu.resizeImage(image, 800, 600);
+		img = Menu.resizeImage(image, 1080, 625);
 		JLabel background = new JLabel();
 		ImageIcon icon = new ImageIcon(img);
 		background.setIcon(icon);
-		background.setBounds(0, 0, 800, 570);
+		background.setBounds(0, 0, 1080,625);
 		background.setOpaque(false);
 		
 		this.setOpaque(false);

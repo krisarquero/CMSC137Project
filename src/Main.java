@@ -23,6 +23,7 @@ public class Main extends JFrame{
 		cards.setOpaque(false);
 
 		getContentPane().add(cards);
+		setBackground(Color.BLACK);
 		setTitle("MAIN");
 		setSize(1080,620);
 		setResizable(false);
@@ -65,27 +66,27 @@ class Menu extends JPanel implements MouseListener{
 		public Menu(){
 			setLayout(null);
 			ImageIcon image = new ImageIcon("graphics/bg.png");
-			Image img = resizeImage(image, 800, 600);
+			Image img = resizeImage(image, 1080, 625);
 			JLabel background = new JLabel();
 			ImageIcon icon = new ImageIcon(img);
 			background.setIcon(icon);
-			background.setBounds(0, 0, 800, 570);
+			background.setBounds(0, 0, 1080, 625);
 			background.setOpaque(false);
 
 			image = new ImageIcon("graphics/buttonPlay.png");
-		 	img = resizeImage(image, 150, 70);
+		 	img = resizeImage(image, 120, 80);
 			play.add(new JLabel(new ImageIcon(img)));
 
 			image = new ImageIcon("graphics/buttonHelp.png");
-			img = resizeImage(image, 110, 50);
+			img = resizeImage(image, 100, 60);
 			help.add(new JLabel(new ImageIcon(img)));
 
 			image = new ImageIcon("graphics/buttonAbout.png");
-			img = resizeImage(image, 110, 50);
+			img = resizeImage(image, 110, 60);
 			about.add(new JLabel(new ImageIcon(img)));
 				
 			image = new ImageIcon("graphics/buttonQuit.png");
-			img = resizeImage(image, 110, 50);
+			img = resizeImage(image, 100, 60);
 			quit.add(new JLabel(new ImageIcon(img)));
 			
 			play.setOpaque(false);
@@ -98,10 +99,10 @@ class Menu extends JPanel implements MouseListener{
 			about.addMouseListener(this);
 			help.addMouseListener(this);
 			quit.addMouseListener(this);
-	     	play.setBounds(150,110,200,100);   // x,y,width,height
-			about.setBounds(260,200,200,100);
-			help.setBounds(50,200,200,100);
-			quit.setBounds(150,280,200,100);
+	     	play.setBounds(250,110,200,100);   // x,y,width,height
+			about.setBounds(360,200,200,100);
+			help.setBounds(150,200,200,100);
+			quit.setBounds(250,280,200,100);
 
 			menu.setLayout(null);
 			menu.add(play);
@@ -109,7 +110,7 @@ class Menu extends JPanel implements MouseListener{
 			menu.add(help);
 			menu.add(quit);
 			menu.setOpaque(false);
-			menu.setBounds(150, 180, 500, 400);
+			menu.setBounds(180, 180, 800, 600);
 
 			add(menu);
 			add(background);
@@ -129,41 +130,48 @@ class Menu extends JPanel implements MouseListener{
 		public void mouseExited(MouseEvent me){
 			if(me.getSource() == play){
 				ImageIcon image = new ImageIcon("graphics/buttonPlay.png");
-				Image img = resizeImage(image, 150, 70);
+				Image img = resizeImage(image, 120, 80);
 				((JLabel)(play.getComponent(0))).setIcon(new ImageIcon(img));
 			}
 			if(me.getSource() == about){
 				ImageIcon image = new ImageIcon("graphics/buttonAbout.png");
-				Image img = resizeImage(image, 110, 50);
+				Image img = resizeImage(image, 110, 60);
 				((JLabel)(about.getComponent(0))).setIcon(new ImageIcon(img));
 			}
 
 			if(me.getSource() == help){
 				ImageIcon image = new ImageIcon("graphics/buttonHelp.png");
-				Image img = resizeImage(image, 110, 50);
+				Image img = resizeImage(image, 100, 60);
 				((JLabel)(help.getComponent(0))).setIcon(new ImageIcon(img));
 			}
 			if(me.getSource() == quit){
 				ImageIcon image = new ImageIcon("graphics/buttonQuit.png");
-				Image img = resizeImage(image, 110, 50);
+				Image img = resizeImage(image, 100, 60);
 				((JLabel)(quit.getComponent(0))).setIcon(new ImageIcon(img));
 			}
 		}
 
 		public void mouseClicked(MouseEvent me){
 			CardLayout cardLayout = (CardLayout)Main.getCards().getLayout();
-			JFrame frame = new JFrame();
-
+			
 		   if(me.getSource() == play){
 		    	//cardLayout.show(Main.getCards(),"Play");
-		    	name = JOptionPane.showInputDialog(frame, "Please enter name:", "lodicakes");
-				ipadd= JOptionPane.showInputDialog(frame, "Please enter ip address:", "10.0.52.122");
-				try {
-					Main.updateCards();
-				} catch(Exception e){}
-				cardLayout = (CardLayout)Main.getCards().getLayout();
-				cardLayout.show(Main.getCards(), "Start");
+		   		UIManager um=new UIManager();
+				um.put("OptionPane.background", Color.BLACK);
+				um.put("Panel.background",Color.BLACK);
+				um.put("OptionPane.messageForeground", Color.WHITE);
+				um.put("Button.background", Color.BLUE);
+				um.put("Button.foreground", Color.WHITE);
+		    	name = JOptionPane.showInputDialog(null, "Please enter your name:", "lodicakes");
+				ipadd= JOptionPane.showInputDialog(null, "Please enter IP Address:", "10.0.52.122");
 
+				if (name != null && ipadd != null){
+					try {
+						Main.updateCards();
+					} catch(Exception e){}
+					cardLayout = (CardLayout)Main.getCards().getLayout();
+					cardLayout.show(Main.getCards(), "Start");
+				}
 		   }
 
 			if(me.getSource() == about){
@@ -182,22 +190,22 @@ class Menu extends JPanel implements MouseListener{
 		public void mouseEntered(MouseEvent me){
 			if(me.getSource() == play){
 				ImageIcon image = new ImageIcon("graphics/buttonPlayHover.png");
-				Image img = resizeImage(image, 150, 70);
+				Image img = resizeImage(image, 120, 80);
 				((JLabel)(play.getComponent(0))).setIcon(new ImageIcon(img));
 			}
 			if(me.getSource() == about){
 				ImageIcon image = new ImageIcon("graphics/buttonAboutHover.png");
-				Image img = resizeImage(image, 110, 50);
+				Image img = resizeImage(image, 110, 60);
 				((JLabel)(about.getComponent(0))).setIcon(new ImageIcon(img));
 			}
 			if(me.getSource() == help){
 				ImageIcon image = new ImageIcon("graphics/buttonHelpHover.png");
-				Image img =resizeImage(image, 110, 50);
+				Image img =resizeImage(image, 100, 60);
 				((JLabel)(help.getComponent(0))).setIcon(new ImageIcon(img));
 			}
 			if(me.getSource() == quit){
 				ImageIcon image = new ImageIcon("graphics/buttonQuitHover.png");
-				Image img = resizeImage(image, 110, 50);
+				Image img = resizeImage(image, 100, 60);
 				((JLabel)(quit.getComponent(0))).setIcon(new ImageIcon(img));
 			}
 		}

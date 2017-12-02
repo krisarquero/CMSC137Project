@@ -28,7 +28,6 @@ class ChatServer implements Runnable{
         }
         
         while (true){
-
             try {
                 clientSocket = serverSocket.accept();
                 ChatServer server = new ChatServer(clientSocket);

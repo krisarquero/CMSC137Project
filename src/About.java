@@ -28,23 +28,23 @@ public class About extends JPanel implements MouseListener{
 		
 		image = new ImageIcon("graphics/background.png");
 		img = image.getImage();
-		img = Menu.resizeImage(image, 800, 600);
+		img = Menu.resizeImage(image, 1080, 625);
 		JLabel background = new JLabel();
 		ImageIcon icon = new ImageIcon(img);
 		background.setIcon(icon);
-		background.setBounds(0, 0, 800, 570);
+		background.setBounds(0, 0, 1080, 625);
 		background.setOpaque(false);
 		
 		JPanel aboutPanel = new JPanel();
 		aboutPanel.setLayout(null);
-		aboutPanel.setBounds(100, 0, 800, 200);
+		aboutPanel.setBounds(250, 0, 800, 200);
 		aboutPanel.setOpaque(false);
 
 		JLabel about = new JLabel("ABOUT", JLabel.CENTER);
 		about.setFont(new Font("Ubuntu", Font.BOLD, 30));
     	about.setFont(new Font("Agency FB", Font.BOLD, 30));
     	about.setForeground(Color.WHITE);
-    	about.setBounds(200, -60, 400, 200);
+    	about.setBounds(350, -60, 400, 200);
 		
 		JLabel aboutContent = new JLabel();
 		aboutContent.setText("<html>&nbsp;&nbsp;&nbsp;&nbsp;This BattleSplix game is the final project of three Computer Science students for the course CMSC 137.</html>");
@@ -105,8 +105,8 @@ public class About extends JPanel implements MouseListener{
 			devPanel.add(devs.get(i));
 		}
 
-		iconPanel.setBounds(150, 190, 100, 500);
-		devPanel.setBounds(300, 205, 500, 500);
+		iconPanel.setBounds(300, 190, 100, 500);
+		devPanel.setBounds(440, 205, 500, 500);
 		iconPanel.setOpaque(false);
 		devPanel.setOpaque(false);
 		this.setOpaque(false);
