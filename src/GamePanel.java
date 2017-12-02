@@ -58,9 +58,6 @@ public class GamePanel extends JPanel implements MouseListener{
 			bs.setPreferredSize(new Dimension(600, 640));
 			Thread board = new Thread(bs);
 			this.add(bs.getContainer(), BorderLayout.CENTER);
-			bs.doAll();
-			bs.setFocusable(true);
-			bs.requestFocusInWindow();
 			board.start();
 		} catch(Exception e){
 			System.out.println(e.getMessage());
