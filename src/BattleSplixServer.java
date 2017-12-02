@@ -104,6 +104,9 @@ public class BattleSplixServer implements Runnable, BattleSplixConstants{
 						  game.update(pname, player);
 						  //Send to all the updated game state
 						  broadcast(game.toString());
+					  }else if(playerData.startsWith("MISSILE")){
+					  	//Formate MISSILE <dir> <x> <y>
+					  	broadcast(playerData);
 					  }
 					  break;
 			}				  

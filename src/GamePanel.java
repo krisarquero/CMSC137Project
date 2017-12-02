@@ -55,7 +55,7 @@ public class GamePanel extends JPanel implements MouseListener{
 
 		try {
 			BattleSplix bs = new BattleSplix(inetAdd, clientName);
-			bs.setPreferredSize(new Dimension(600, 640));
+			//bs.setPreferredSize(new Dimension(600, 640));
 			Thread board = new Thread(bs);
 			this.add(bs.getContainer(), BorderLayout.CENTER);
 			board.start();

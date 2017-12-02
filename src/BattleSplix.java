@@ -30,6 +30,7 @@ public class BattleSplix extends JPanel implements Runnable, BattleSplixConstant
 	JLabel status = new JLabel("");
 	JPanel container = new JPanel();
 	int x,y,xspeed=5,yspeed=5,prevX,prevY;
+	int prevDir;
 	Thread t=new Thread(this);
 	String name="Ronald";
 	String pname;
@@ -39,7 +40,6 @@ public class BattleSplix extends JPanel implements Runnable, BattleSplixConstant
 	String serverData;
 	BufferedImage offscreen;
 	Random rand = new Random();
-
 
 	public BattleSplix(String server,String name) throws Exception{
 		this.server=server;
@@ -75,7 +75,7 @@ public class BattleSplix extends JPanel implements Runnable, BattleSplixConstant
 	public JPanel getContainer(){
 		return this.container;
 	}
-	
+
 	public void send(String msg){
 		try{
 			byte[] buf = msg.getBytes();
@@ -166,38 +166,58 @@ public class BattleSplix extends JPanel implements Runnable, BattleSplixConstant
 				//g.fillOval(x, y, 18, 18);
 				g.drawString(pname,(x-10)>0?x-10:x,(y+30)<600?y+30:y-30);					
 			}
+		}else if(serverData != null && serverData.startsWith("MISSILE")){
+			String[] playersInfo = serverData.split(" ");
+			int x = Integer.parseInt(playersInfo[2]);
+			int y = Integer.parseInt(playersInfo[3]);
+			int width = Integer.parseInt(playersInfo[4]);
+			int height = Integer.parseInt(playersInfo[5]);
+
+			if(x>640) x = 640;
+			if(y>600) y = 600;
+			g.setColor(Color.WHITE);
+			g.fillRect(x*20, y*20, width, height);
 		}
 		//g.drawImage(offscreen, 0, 0, null);
 	}
 
+	public void correctFocus(){
+		this.setFocusable(true);
+		this.requestFocus();
+	}
+
 	class MouseMotionHandler extends MouseMotionAdapter{
 		public void mouseMoved(MouseEvent me){
-			this.setFocusable(true);
-			this.requestFocus();
+			correctFocus();
 		}
 	}
 	
 	class KeyHandler extends KeyAdapter{
 		public void keyPressed(KeyEvent ke){
-			prevX=x;prevY=y;
-			switch (ke.getKeyCode()){
-				case KeyEvent.VK_DOWN:
-					if(isMove(x/20, (y+yspeed)/20) && y+yspeed<600) y+=yspeed;
-					break;
-				case KeyEvent.VK_UP:
-					if(isMove(x/20, (y-yspeed)/20) && y-yspeed>0) y-=yspeed;
-					break;
-				case KeyEvent.VK_LEFT:
-					if(isMove((x-xspeed)/20, (y)/20) && x-xspeed>0) x-=xspeed;
-					break;
-				case KeyEvent.VK_RIGHT:
-					if(isMove((x+xspeed)/20, (y)/20) && x+xspeed<640) x+=xspeed;
-					break;
-			}
-			if (prevX != x || prevY != y){
-				//board.updateBoard(name, x/20, y/20);
-				send("PLAYER "+name+" "+x+" "+y);
-			}
+			try{	
+				prevX=x;prevY=y;
+				switch (ke.getKeyCode()){
+					case KeyEvent.VK_DOWN:
+						if(isMove(x/20, (y+yspeed)/20) && y+yspeed<600){ y+=yspeed; prevDir = 2; }
+						break;
+					case KeyEvent.VK_UP:
+						if(isMove(x/20, (y-yspeed)/20) && y-yspeed>0){ y-=yspeed; prevDir = 1; }
+						break;
+					case KeyEvent.VK_LEFT:
+						if(isMove((x-xspeed)/20, (y)/20) && x-xspeed>0){ x-=xspeed; prevDir = 3; }
+						break;
+					case KeyEvent.VK_RIGHT:
+						if(isMove((x+xspeed)/20, (y)/20) && x+xspeed<640){ x+=xspeed; prevDir = 4; }
+						break;
+					case KeyEvent.VK_SPACE:
+						new Missile(prevX/20, prevY/20, prevDir, server);
+						break;
+				}
+				if (prevX != x || prevY != y){
+					//board.updateBoard(name, x/20, y/20);
+					send("PLAYER "+name+" "+x+" "+y);
+				}
+			}catch(Exception e){}
 		}
 	}
 
@@ -207,12 +227,12 @@ public class BattleSplix extends JPanel implements Runnable, BattleSplixConstant
 	}
 
 	public void randomizePlace(){
-		// boolean b = true;
-		// while(b){
+		boolean b = true;
+		while(b){
 			int x = rand.nextInt(640);
 			int y = rand.nextInt(600);
-		// 	if(board.getBoard()[x/20][y/20].equals("0")) b = false;
-		// }
+			if(board.getBoard()[x/20][y/20].equals("0")) b = false;
+		}
 
 		this.x = x;
 		this.y = y;

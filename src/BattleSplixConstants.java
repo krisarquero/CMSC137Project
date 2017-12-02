@@ -21,6 +21,12 @@ public interface BattleSplixConstants {
 	public static final int VINE = 2;
 	public static final int METAL = 3;
 
+	//Constants for directions
+	public static final int UP = 1;
+	public static final int DOWN = 2;
+	public static final int LEFT = 3;
+	public static final int RIGHT = 4;
+
 	/**
 	 * Game port
 	 */
