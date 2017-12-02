@@ -27,12 +27,18 @@ public class GamePanel extends JPanel implements MouseListener{
 		} catch(Exception e){
 			e.printStackTrace();
 		}
+		JLabel chatHeader = new JLabel("CHAT ROOM");
+		chatHeader.setBackground(Color.BLACK);
+		chatHeader.setHorizontalAlignment(SwingConstants.CENTER);
+		chatHeader.setVerticalAlignment(SwingConstants.CENTER);
+		chatHeader.setForeground(Color.WHITE);
 		chatPanel.setOpaque(true);
-		chatPanel.setBackground(Color.WHITE);
+		chatPanel.setBackground(Color.BLACK);
+		chatPanel.add(chatHeader, BorderLayout.NORTH);
 		chatPanel.add(client, BorderLayout.SOUTH);
 
 		// Status Panel (Game Stats)
-		String stats = "Game Stats for "  + clientName;
+		String stats = " "  + clientName;
 		JLabel label = new JLabel(stats);
 		statusPanel.setOpaque(true);
 		statusPanel.setBackground(Color.WHITE);
