@@ -20,6 +20,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
+import java.awt.GridBagLayout;
+import java.awt.GridBagConstraints;
 import java.awt.Dimension;
 import javax.swing.JLabel;
 
@@ -28,28 +30,40 @@ public class BattleSplix extends JPanel implements Runnable, BattleSplixConstant
 	JFrame frame= new JFrame();
 	JPanel stats = new JPanel();
 	JLabel status = new JLabel("");
+	JLabel timedt = new JLabel("");
 	JPanel container = new JPanel();
 	int x,y,xspeed=5,yspeed=5,prevX,prevY;
 	int prevDir;
 	Thread t=new Thread(this);
 	String name="Ronald";
 	String pname;
-	String server="localhost";
+	static String server="localhost";
 	boolean connected=false;
     DatagramSocket socket = new DatagramSocket();
 	String serverData;
 	BufferedImage offscreen;
 	Random rand = new Random();
+	GridBagConstraints c = new GridBagConstraints();
 
 	public BattleSplix(String server,String name) throws Exception{
 		this.server=server;
 		this.name=name;
+		stats.setLayout(new GridBagLayout());
 		container.setLayout(new BorderLayout());
 		frame.setTitle(APP_NAME+":"+name);
 		socket.setSoTimeout(100);
 
 		this.randomizePlace();
 		//GUI
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.ipady = 40;      //make this component tall
+		c.weightx = 0.0;
+		c.gridwidth = 3;
+		c.gridx = 0;
+		c.gridy = 1;
+		timedt.setFont(timedt.getFont().deriveFont(32f));
+		timedt.setText("<html> TIME: <br> 2:00 <html>");
+		stats.add(timedt, c);
 		stats.setPreferredSize(new Dimension(200,600));
 		container.add(this, BorderLayout.CENTER);
 		container.add(stats, BorderLayout.WEST);
@@ -177,8 +191,23 @@ public class BattleSplix extends JPanel implements Runnable, BattleSplixConstant
 			if(y>600) y = 600;
 			g.setColor(Color.WHITE);
 			g.fillRect(x*20, y*20, width, height);
+		}else if(serverData != null && serverData.startsWith("TIMER")){
+			String[] playersInfo = serverData.split(" ");
+			int curr = Integer.parseInt(playersInfo[1]);
+			int minute = curr/60;
+			int sec = curr%60;
+			String s = sec<10?"0"+Integer.toString(sec):Integer.toString(sec);
+			String retval = "<html> TIME: <br> "+Integer.toString(minute)+":"+s+"<br> <html>";
+			timedt.setFont(timedt.getFont().deriveFont(32f)); 
+			timedt.setText(retval);
+			c.gridy = 1;
+			stats.add(timedt, c);
 		}
 		//g.drawImage(offscreen, 0, 0, null);
+	}
+
+	public static String getServer(){
+		return server;
 	}
 
 	public void correctFocus(){
@@ -253,13 +282,14 @@ public class BattleSplix extends JPanel implements Runnable, BattleSplixConstant
 				}
 			}
 		}
-		String retval="";
+		String retval="<html> PLAYER SCORES: <br> <html>";
 		for(Iterator ite=players.keySet().iterator();ite.hasNext();){
 			String name=(String)ite.next();
 			retval+= "<html> "+name+": "+ Integer.toString((int)players.get(name))+"<br> <html>";
 			status.setFont(status.getFont().deriveFont(16f)); 
 			status.setText(retval);
-			stats.add(status);
+			c.gridy = 3;
+			stats.add(status, c);
 		}
 
 		// int x = rand.nextInt(640);

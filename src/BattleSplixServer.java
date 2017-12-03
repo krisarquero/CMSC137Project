@@ -13,6 +13,7 @@ public class BattleSplixServer implements Runnable, BattleSplixConstants{
 	int gameStage=WAITING_FOR_PLAYERS;
 	int numPlayers;
 	Thread t = new Thread(this);
+	Thread timer;
 
 	public BattleSplixServer(int numPlayers){
 		this.numPlayers = numPlayers;
@@ -82,10 +83,14 @@ public class BattleSplixServer implements Runnable, BattleSplixConstants{
 						}
 					  break;	
 				  case GAME_START:
+				  	try{
 					  System.out.println("Game State: START");
 					  broadcast("START");
 					  gameStage=IN_PROGRESS;
+					  timer = new Thread(new GameTimer(BattleSplix.getServer()));
+					  timer.start();
 					  break;
+					 }catch(Exception e){}
 				  case IN_PROGRESS:
 					  
 					  //Player data was received!
@@ -106,6 +111,8 @@ public class BattleSplixServer implements Runnable, BattleSplixConstants{
 						  broadcast(game.toString());
 					  }else if(playerData.startsWith("MISSILE")){
 					  	//Formate MISSILE <dir> <x> <y>
+					  	broadcast(playerData);
+					  }else if(playerData.startsWith("TIMER")){
 					  	broadcast(playerData);
 					  }
 					  break;
