@@ -28,7 +28,7 @@ public interface BattleSplixConstants {
 	public static final int RIGHT = 4;
 
 	//Game time
-	public static final int GAME_EXTENT = 120;
+	public static final int GAME_EXTENT = 180;
 
 	/**
 	 * Game port
