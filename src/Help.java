@@ -90,30 +90,30 @@ public class Help extends JPanel implements MouseListener{
 		iContent.setBounds(50,120,500,100);*/
 		
 		image = new ImageIcon("graphics/left.png");
-		img = Menu.resizeImage(image, 90, 90);
+		img = Menu.resizeImage(image, 120, 120);
 		arrowleft.add(new JLabel(new ImageIcon(img)));
-		arrowleft.setBounds(700, 200, 100, 100);
+		arrowleft.setBounds(620, 270, 120, 120);
 		arrowleft.setOpaque(false);
 		add(arrowleft);
 		
 		image = new ImageIcon("graphics/right.png");
-		img = Menu.resizeImage(image, 90, 90);
+		img = Menu.resizeImage(image, 120, 120);
 		arrowright.add(new JLabel(new ImageIcon(img)));
-		arrowright.setBounds(850, 195, 100, 100);
+		arrowright.setBounds(800, 265, 120, 120);
 		arrowright.setOpaque(false);
 		add(arrowright);
 		
 		image = new ImageIcon("graphics/up.png");
-		img = Menu.resizeImage(image, 90, 90);
+		img = Menu.resizeImage(image, 120, 120);
 		arrowup.add(new JLabel(new ImageIcon(img)));
-		arrowup.setBounds(770, 150, 100, 100);
+		arrowup.setBounds(700, 190, 120, 120);
 		arrowup.setOpaque(false);
 		add(arrowup);
 		
 		image = new ImageIcon("graphics/down.png");
-		img = Menu.resizeImage(image, 90, 90);
+		img = Menu.resizeImage(image, 120, 120);
 		arrowdown.add(new JLabel(new ImageIcon(img)));
-		arrowdown.setBounds(775, 250, 100,  100);
+		arrowdown.setBounds(705, 350, 120,  120);
 		arrowdown.setOpaque(false);
 		add(arrowdown);
 				
