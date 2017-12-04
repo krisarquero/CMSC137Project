@@ -115,6 +115,9 @@ public class BattleSplixServer implements Runnable, BattleSplixConstants{
 					  }else if(playerData.startsWith("TIMER")){
 					  	broadcast(playerData);
 					  }
+					  else if(playerData.startsWith("END")){
+					  	broadcast(playerData);
+					  }
 					  break;
 			}				  
 		}

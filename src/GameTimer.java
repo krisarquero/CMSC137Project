@@ -17,9 +17,10 @@ public class GameTimer extends Thread implements BattleSplixConstants{
 	public void run(){
 		try{
 			int i=0;
-			for(i=GAME_EXTENT; i!=0; i--){
+			for(i=GAME_EXTENT; i>=0; i--){
 				send("TIMER "+i);
 				Thread.sleep(1000);
+				if(i==0) send("END "+i);
 			}
 		}catch(Exception e){}
 	}
