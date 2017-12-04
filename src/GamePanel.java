@@ -42,7 +42,7 @@ public class GamePanel extends JPanel implements MouseListener{
 		chatPanel.add(client, BorderLayout.SOUTH);
 
 		// Status Panel (Game Stats)
-		String stats = " "  + clientName;
+		String stats = "PLAYER : "  + clientName;
 		JLabel label = new JLabel(stats);
 		statusPanel.setOpaque(true);
 		statusPanel.setBackground(Color.WHITE);

@@ -188,7 +188,7 @@ public class BattleSplix extends JPanel implements Runnable, BattleSplixConstant
 				//g.drawImage(new ImageIcon("Tank/Tank.png").getImage(),x,y,20,20, this);
 				board.updateBoard(pname+" "+playerInfo[4]+" "+playerInfo[5]+" "+playerInfo[6], x/20, y/20);
 				g.setColor(new Color(Float.valueOf(playerInfo[4]), Float.valueOf(playerInfo[5]), Float.valueOf(playerInfo[6])));
-				g.drawImage(new ImageIcon("Block/iconuser.png").getImage(),x,y,25,25, this);
+				//g.drawImage(new ImageIcon("Block/iconuser.png").getImage(),x,y,25,25, this);
 				//g.fillOval(x, y, 18, 18);
 				g.drawString(pname,(x-10)>0?x-10:x,(y+30)<600?y+30:y-30);					
 			}
@@ -287,7 +287,8 @@ public class BattleSplix extends JPanel implements Runnable, BattleSplixConstant
 			SwingUtilities.invokeLater(new Runnable() {
 				@Override
 				public void run() {
-					JOptionPane.showMessageDialog(null, "YOU WON!");
+					JOptionPane.showMessageDialog(null, "YOU WIN!");
+					System.exit(1);
 				}
 			});
 		}else{
@@ -295,6 +296,7 @@ public class BattleSplix extends JPanel implements Runnable, BattleSplixConstant
 				@Override
 				public void run() {
 					JOptionPane.showMessageDialog(null, "YOU LOSE!");
+					System.exit(1);
 				}
 			});
 		}
