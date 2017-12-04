@@ -23,6 +23,7 @@ public class Missile extends Thread implements BattleSplixConstants{
 		this.direction = dir;
 		this.server = server;
 		this.isCollide = false;
+		this.speed = 1;
 
 		if(dir == UP || dir == DOWN){
 			this.width = 7;
@@ -43,7 +44,7 @@ public class Missile extends Thread implements BattleSplixConstants{
 		try{
 			while(!isCollide){
 				send("MISSILE "+direction+" "+xPos+" "+yPos+" "+width+" "+height);
-				Thread.sleep(50);
+				Thread.sleep(30);
 				switch(direction){
 					case UP:
 						if((yPos-1) > 0) yPos -= 1;
@@ -58,6 +59,7 @@ public class Missile extends Thread implements BattleSplixConstants{
 						if((xPos+1) < 640) xPos += 1;
 						break;
 				}
+
 				if(xPos-1 <= 0 || xPos+1 >= 640) isCollide = true;
 				if(yPos-1 <= 0 || yPos+1 >= 600) isCollide = true;
 			}
@@ -71,7 +73,6 @@ public class Missile extends Thread implements BattleSplixConstants{
         	InetAddress address = InetAddress.getByName(server);
         	DatagramPacket packet = new DatagramPacket(buf, buf.length, address, PORT);
         	socket.send(packet);
-        }catch(Exception e){}
-		
+        }catch(Exception e){}	
 	}
 }
