@@ -24,6 +24,10 @@ import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Dimension;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
+
+
 
 public class BattleSplix extends JPanel implements Runnable, BattleSplixConstants{
 	Board board = new Board(32, 30);
@@ -34,6 +38,7 @@ public class BattleSplix extends JPanel implements Runnable, BattleSplixConstant
 	JPanel container = new JPanel();
 	int x,y,xspeed=5,yspeed=5,prevX,prevY;
 	int prevDir;
+	boolean ongoing = true;
 	Thread t=new Thread(this);
 	String name="Ronald";
 	String pname;
@@ -101,7 +106,7 @@ public class BattleSplix extends JPanel implements Runnable, BattleSplixConstant
 	}
 	
 	public void run(){
-		while(true){
+		while(ongoing){
 			try{
 				Thread.sleep(1);
 			}catch(Exception ioe){}
@@ -202,8 +207,57 @@ public class BattleSplix extends JPanel implements Runnable, BattleSplixConstant
 			timedt.setText(retval);
 			c.gridy = 1;
 			stats.add(timedt, c);
+		}else if(serverData != null && serverData.startsWith("END")){
+			checkWinners();
 		}
 		//g.drawImage(offscreen, 0, 0, null);
+	}
+
+	public void checkWinners(){
+		Map players = new HashMap();
+		int max = 0, playerScore = 0;
+		String nameID="";
+		String[][] brd = board.getBoard();
+		
+		for(int i = 0; i<32; i++){
+			for(int j=0; j<30; j++){
+				if(brd[i][j].length()!=1){
+					String[] tileInfo = brd[i][j].split(" ");
+					if(!players.containsKey(tileInfo[0])){ players.put(tileInfo[0], 1); }
+					else{
+						int temp = (int)players.get(tileInfo[0]);
+						players.replace(tileInfo[0], temp+1);
+					}
+				}
+			}
+		}
+
+		for(Iterator ite=players.keySet().iterator();ite.hasNext();){
+			String name=(String)ite.next();
+			playerScore = (int)players.get(name);
+			if(playerScore > max){
+				max = playerScore;
+				nameID = name;
+			}
+		}
+		ongoing = false;
+		if(this.name.equals(nameID)){
+			SwingUtilities.invokeLater(new Runnable() {
+				@Override
+				public void run() {
+					JOptionPane.showMessageDialog(null, "YOU WON!");
+				}
+			});
+		}else{
+			SwingUtilities.invokeLater(new Runnable() {
+				@Override
+				public void run() {
+					JOptionPane.showMessageDialog(null, "YOU LOSE!");
+				}
+			});
+		}
+
+	//	System.out.println("WINNER: "+" "+nameID+" SCORE: "+" "+Integer.toString(max));
 	}
 
 	public static String getServer(){
@@ -257,9 +311,11 @@ public class BattleSplix extends JPanel implements Runnable, BattleSplixConstant
 
 	public void randomizePlace(){
 		boolean b = true;
+		int x=0, y=0;
+
 		while(b){
-			int x = rand.nextInt(640);
-			int y = rand.nextInt(600);
+			x = rand.nextInt(640);
+			y = rand.nextInt(600);
 			if(board.getBoard()[x/20][y/20].equals("0")) b = false;
 		}
 
