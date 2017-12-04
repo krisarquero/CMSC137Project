@@ -188,6 +188,7 @@ public class BattleSplix extends JPanel implements Runnable, BattleSplixConstant
 				//g.drawImage(new ImageIcon("Tank/Tank.png").getImage(),x,y,20,20, this);
 				board.updateBoard(pname+" "+playerInfo[4]+" "+playerInfo[5]+" "+playerInfo[6], x/20, y/20);
 				g.setColor(new Color(Float.valueOf(playerInfo[4]), Float.valueOf(playerInfo[5]), Float.valueOf(playerInfo[6])));
+				g.drawImage(new ImageIcon("Block/iconuser.png").getImage(),x,y,25,25, this);
 				//g.fillOval(x, y, 18, 18);
 				g.drawString(pname,(x-10)>0?x-10:x,(y+30)<600?y+30:y-30);					
 			}
@@ -207,7 +208,7 @@ public class BattleSplix extends JPanel implements Runnable, BattleSplixConstant
 		}else if(serverData != null && serverData.startsWith("TIMER")){
 			String[] playersInfo = serverData.split(" ");
 			int curr = Integer.parseInt(playersInfo[1]);
-			if(curr%30 == 0 && curr<180) releasePowerUp();
+			if(curr%20 == 0 && curr<180) releasePowerUp();
 			int minute = curr/60;
 			int sec = curr%60;
 			String s = sec<10?"0"+Integer.toString(sec):Integer.toString(sec);
@@ -249,7 +250,7 @@ public class BattleSplix extends JPanel implements Runnable, BattleSplixConstant
 		while(b){
 			x = rand.nextInt(640);
 			y = rand.nextInt(600);
-			if(board.getBoard()[x/20][y/20].equals("0") || board.getBoard()[x/20][y/20].startsWith("PLAYER")) b = false;
+			if(board.getBoard()[x/20][y/20].equals("0") || board.getBoard()[x/20][y/20].length()!=1) b = false;
 		}
 		send("NEWERPAPU "+x+" "+y);
 	}
@@ -383,7 +384,7 @@ public class BattleSplix extends JPanel implements Runnable, BattleSplixConstant
 		String[][] brd = board.getBoard();
 		for(int i = 0; i<32; i++){
 			for(int j=0; j<30; j++){
-				if(brd[i][j].startsWith("PLAYER")){
+				if(brd[i][j].length()!= 1 && !brd[i][j].equals("WERPAPU")){
 					String[] tileInfo = brd[i][j].split(" ");
 					if(!players.containsKey(tileInfo[0])){ players.put(tileInfo[0], 1); }
 					else{
