@@ -26,7 +26,7 @@ public class Main extends JFrame implements BattleSplixConstants{
 		getContentPane().add(cards);
 		setBackground(Color.BLACK);
 		setTitle(APP_NAME);
-		setSize(1080,620);
+		setSize(1071,620);
 		setResizable(false);
 		setLocationRelativeTo(null);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
