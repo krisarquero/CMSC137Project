@@ -91,6 +91,7 @@ public class BattleSplix extends JPanel implements Runnable, BattleSplixConstant
 		//t.start();
 	}
 
+	//Returns the Jpanel containing the board and the stats for the players
 	public JPanel getContainer(){
 		return this.container;
 	}
@@ -108,7 +109,7 @@ public class BattleSplix extends JPanel implements Runnable, BattleSplixConstant
 	public void run(){
 		while(ongoing){
 			try{
-				Thread.sleep(1);
+				Thread.sleep(0);
 			}catch(Exception ioe){}
 						
 			//Get the data from players
@@ -134,9 +135,7 @@ public class BattleSplix extends JPanel implements Runnable, BattleSplixConstant
 		}
 	}
 	
-	/**
-	 * Repainting method
-	 */
+	//Paints basically everything found on the board
 	public void paintComponent(Graphics g){
 		//g.setColor(Color.RED);
 		this.updateStats();
@@ -144,8 +143,11 @@ public class BattleSplix extends JPanel implements Runnable, BattleSplixConstant
 		for(int i = 0; i<32; i++){
 			for(int j=0; j<30; j++){
 				if(brd[i][j].length()==1){
+					//Paints a square rectangle that will serve as a border
 					g.setColor(Color.GRAY);
 					g.fillRect(i*20, j*20, 20, 20);
+
+					//Paints the respective representation of a tile based on map
 					switch(Integer.parseInt(brd[i][j])){
 						case BRICKLESS:
 							g.setColor(Color.BLACK);
@@ -161,13 +163,17 @@ public class BattleSplix extends JPanel implements Runnable, BattleSplixConstant
 							g.drawImage(new ImageIcon("Block/vine.png").getImage(),i*20,j*20,19,19, this);
 							break;
 					}
+				}else if(brd[i][j].equals("WERPAPU")){
+					g.drawImage(new ImageIcon("Block/invincible.png").getImage(),i*20,j*20,19,19, this);
 				}else{
+					//Gets the color of the player 
 					String[] tileInfo = brd[i][j].split(" ");
 					g.setColor(new Color(Float.valueOf(tileInfo[1]), Float.valueOf(tileInfo[2]), Float.valueOf(tileInfo[3])));
 					g.fillRect(i*20, j*20, 18, 18);
 				}
 			}
 		}
+		//Change from a player was received and shall be repainted
 		if(serverData != null && serverData.startsWith("PLAYER")){
 			String[] playersInfo = serverData.split(":");
 			g.setColor(Color.BLACK);
@@ -185,6 +191,7 @@ public class BattleSplix extends JPanel implements Runnable, BattleSplixConstant
 				//g.fillOval(x, y, 18, 18);
 				g.drawString(pname,(x-10)>0?x-10:x,(y+30)<600?y+30:y-30);					
 			}
+		//A missile if currently moving and should be repainted every second
 		}else if(serverData != null && serverData.startsWith("MISSILE")){
 			String[] playersInfo = serverData.split(" ");
 			int x = Integer.parseInt(playersInfo[2]);
@@ -196,9 +203,11 @@ public class BattleSplix extends JPanel implements Runnable, BattleSplixConstant
 			if(y>600) y = 600;
 			g.setColor(Color.WHITE);
 			g.fillRect(x*20, y*20, width, height);
+		//Update on the time is received every second an should be repainted to every player
 		}else if(serverData != null && serverData.startsWith("TIMER")){
 			String[] playersInfo = serverData.split(" ");
 			int curr = Integer.parseInt(playersInfo[1]);
+			if(curr%20 == 0 && curr<120) releasePowerUp();
 			int minute = curr/60;
 			int sec = curr%60;
 			String s = sec<10?"0"+Integer.toString(sec):Integer.toString(sec);
@@ -207,10 +216,42 @@ public class BattleSplix extends JPanel implements Runnable, BattleSplixConstant
 			timedt.setText(retval);
 			c.gridy = 1;
 			stats.add(timedt, c);
+		}else if(serverData != null && serverData.startsWith("NEWERPAPU")){
+			String[] playersInfo = serverData.split(" ");
+			int x = Integer.parseInt(playersInfo[1]);
+			int y = Integer.parseInt(playersInfo[2]);
+			if(x>640) x = 640;
+			if(y>600) y = 600;
+
+			board.updateBoard("WERPAPU", x/20, y/20);
+			g.drawImage(new ImageIcon("Block/invincible.png").getImage(),x,y,19,19, this);
+		}else if(serverData != null && serverData.startsWith("INCWERPAPU")){
+			String[] playersInfo = serverData.split(" ");
+			int speedup = Integer.parseInt(playersInfo[2]);
+			this.xspeed = speedup;
+			this.yspeed = speedup;
+		}else if(serverData != null && serverData.startsWith("DECWERPAPU")){
+			String[] playersInfo = serverData.split(" ");
+			int speedup = Integer.parseInt(playersInfo[2]);
+			this.xspeed = speedup;
+			this.yspeed = speedup;
 		}else if(serverData != null && serverData.startsWith("END")){
 			checkWinners();
 		}
 		//g.drawImage(offscreen, 0, 0, null);
+	}
+
+	public void releasePowerUp(){
+		String[][] brd = board.getBoard();
+		boolean b = true;
+		int x=0, y=0;
+
+		while(b){
+			x = rand.nextInt(640);
+			y = rand.nextInt(600);
+			if(board.getBoard()[x/20][y/20].equals("0") || board.getBoard()[x/20][y/20].startsWith("PLAYER")) b = false;
+		}
+		send("NEWERPAPU "+x+" "+y);
 	}
 
 	public void checkWinners(){
@@ -264,6 +305,10 @@ public class BattleSplix extends JPanel implements Runnable, BattleSplixConstant
 		return server;
 	}
 
+	// public static Board getGameGoard(){
+
+	// }
+
 	public void correctFocus(){
 		this.setFocusable(true);
 		this.requestFocus();
@@ -277,7 +322,7 @@ public class BattleSplix extends JPanel implements Runnable, BattleSplixConstant
 	
 	class KeyHandler extends KeyAdapter{
 		public void keyPressed(KeyEvent ke){
-			try{	
+			try{
 				prevX=x;prevY=y;
 				switch (ke.getKeyCode()){
 					case KeyEvent.VK_DOWN:
@@ -298,8 +343,18 @@ public class BattleSplix extends JPanel implements Runnable, BattleSplixConstant
 				}
 				if (prevX != x || prevY != y){
 					//board.updateBoard(name, x/20, y/20);
+					checkPowerUp(x/20, y/20);
 					send("PLAYER "+name+" "+x+" "+y);
 				}
+			}catch(Exception e){}
+		}
+	}
+
+	public void checkPowerUp(int x, int y){
+		if(board.getBoard()[x][y].equals("WERPAPU")){
+			try{
+				new PowerUp(this.name, server);
+				board.updateBoard("0", x,y);
 			}catch(Exception e){}
 		}
 	}
@@ -328,7 +383,7 @@ public class BattleSplix extends JPanel implements Runnable, BattleSplixConstant
 		String[][] brd = board.getBoard();
 		for(int i = 0; i<32; i++){
 			for(int j=0; j<30; j++){
-				if(brd[i][j].length()!=1){
+				if(brd[i][j].startsWith("PLAYER")){
 					String[] tileInfo = brd[i][j].split(" ");
 					if(!players.containsKey(tileInfo[0])){ players.put(tileInfo[0], 1); }
 					else{

@@ -14,6 +14,7 @@ public class BattleSplixServer implements Runnable, BattleSplixConstants{
 	int numPlayers;
 	Thread t = new Thread(this);
 	Thread timer;
+	Board board;
 
 	public BattleSplixServer(int numPlayers){
 		this.numPlayers = numPlayers;
@@ -26,7 +27,6 @@ public class BattleSplixServer implements Runnable, BattleSplixConstants{
 		}catch(Exception e){}
 		//Create the game state
 		game = new BattleSplixState();
-		
 		System.out.println("Game successfully created...");
 		
 		//Start the game thread
@@ -39,6 +39,14 @@ public class BattleSplixServer implements Runnable, BattleSplixConstants{
 			TankPlayer player=(TankPlayer)game.getPlayers().get(name);			
 			send(player,msg);	
 		}
+	}
+
+	public void broadcastToPlayer(String msg){
+		String[] msgInfo = msg.split(" ");
+		String name = msgInfo[1];
+		//WERPAPU <NAME> <SPEEDUP>
+		TankPlayer player=(TankPlayer)game.getPlayers().get(name);		
+		send(player,msg);	
 	}
 
 	public void send(TankPlayer player, String msg){
@@ -117,7 +125,16 @@ public class BattleSplixServer implements Runnable, BattleSplixConstants{
 					  }
 					  else if(playerData.startsWith("END")){
 					  	broadcast(playerData);
+					  }else if(playerData.startsWith("END")){
+					  	broadcast(playerData);
+					  }else if(playerData.startsWith("INCWERPAPU")){
+					  	broadcastToPlayer(playerData);
+					  }else if(playerData.startsWith("DECWERPAPU")){
+					  	broadcastToPlayer(playerData);
+					  }else if(playerData.startsWith("NEWERPAPU")){
+					  	broadcast(playerData);
 					  }
+
 					  break;
 			}				  
 		}
