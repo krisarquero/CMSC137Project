@@ -75,19 +75,19 @@ class Menu extends JPanel implements MouseListener{
 		background.setBounds(0, 0, 1080, 625);
 		background.setOpaque(false);
 		image = new ImageIcon("graphics/buttonPlay.png");
-	 	img = resizeImage(image, 150, 80);
+	 	img = resizeImage(image, 150, 60);
 		play.add(new JLabel(new ImageIcon(img)));
 
 		image = new ImageIcon("graphics/buttonHelp.png");
-		img = resizeImage(image, 150, 80);
+		img = resizeImage(image, 150, 60);
 		help.add(new JLabel(new ImageIcon(img)));
 
 		image = new ImageIcon("graphics/buttonAbout.png");
-		img = resizeImage(image, 150, 80);
+		img = resizeImage(image, 150, 60);
 		about.add(new JLabel(new ImageIcon(img)));
 			
 		image = new ImageIcon("graphics/buttonQuit.png");
-		img = resizeImage(image, 150, 80);
+		img = resizeImage(image, 150, 60);
 		quit.add(new JLabel(new ImageIcon(img)));
 		
 		play.setOpaque(false);
@@ -102,7 +102,7 @@ class Menu extends JPanel implements MouseListener{
 		quit.addMouseListener(this);
 	    play.setBounds(250,110,200,100);   // x,y,width,height
 		about.setBounds(360,200,200,100);
-		help.setBounds(150,200,200,100);
+		help.setBounds(140,200,200,100);
 		quit.setBounds(250,280,200,100);
 
 		menu.setLayout(null);
@@ -131,22 +131,22 @@ class Menu extends JPanel implements MouseListener{
 	public void mouseExited(MouseEvent me){
 		if(me.getSource() == play){
 			ImageIcon image = new ImageIcon("graphics/buttonPlay.png");
-			Image img = resizeImage(image, 150, 80);
+			Image img = resizeImage(image, 150, 60);
 			((JLabel)(play.getComponent(0))).setIcon(new ImageIcon(img));
 		}
 		if(me.getSource() == about){
 			ImageIcon image = new ImageIcon("graphics/buttonAbout.png");
-			Image img = resizeImage(image, 150, 80);
+			Image img = resizeImage(image, 150, 60);
 			((JLabel)(about.getComponent(0))).setIcon(new ImageIcon(img));
 		}
 		if(me.getSource() == help){
 			ImageIcon image = new ImageIcon("graphics/buttonHelp.png");
-			Image img = resizeImage(image, 150, 80);
+			Image img = resizeImage(image, 150, 60);
 			((JLabel)(help.getComponent(0))).setIcon(new ImageIcon(img));
 		}
 		if(me.getSource() == quit){
 			ImageIcon image = new ImageIcon("graphics/buttonQuit.png");
-			Image img = resizeImage(image, 150, 80);
+			Image img = resizeImage(image, 150, 60);
 			((JLabel)(quit.getComponent(0))).setIcon(new ImageIcon(img));
 		}
 	}
@@ -188,22 +188,22 @@ class Menu extends JPanel implements MouseListener{
 	public void mouseEntered(MouseEvent me){
 		if(me.getSource() == play){
 			ImageIcon image = new ImageIcon("graphics/buttonPlayHover.png");
-			Image img = resizeImage(image, 150, 80);
+			Image img = resizeImage(image, 150, 60);
 			((JLabel)(play.getComponent(0))).setIcon(new ImageIcon(img));
 		}
 		if(me.getSource() == about){
 			ImageIcon image = new ImageIcon("graphics/buttonAboutHover.png");
-			Image img = resizeImage(image, 150, 80);
+			Image img = resizeImage(image, 150, 60);
 			((JLabel)(about.getComponent(0))).setIcon(new ImageIcon(img));
 		}
 		if(me.getSource() == help){
 			ImageIcon image = new ImageIcon("graphics/buttonHelpHover.png");
-			Image img =resizeImage(image, 150, 80);
+			Image img =resizeImage(image, 150, 60);
 			((JLabel)(help.getComponent(0))).setIcon(new ImageIcon(img));
 		}
 		if(me.getSource() == quit){
 			ImageIcon image = new ImageIcon("graphics/buttonQuitHover.png");
-			Image img = resizeImage(image, 150, 80);
+			Image img = resizeImage(image, 150, 60);
 			((JLabel)(quit.getComponent(0))).setIcon(new ImageIcon(img));
 		}
 	}

@@ -18,15 +18,15 @@ public class About extends JPanel implements MouseListener{
 		String[] lodi = {"Ronald John Leis","Kristine Arquero","Julie Anne Jerusalem"};
 		this.setLayout(null);
 		
-		image = new ImageIcon("graphics/return.png");
-		img = Menu.resizeImage(image, 50, 50);
+		image = new ImageIcon("graphics/back.png");
+				img = Menu.resizeImage(image, 90, 90);
 		back.add(new JLabel(new ImageIcon(img)));
-		back.setBounds(10, 10, 60, 60);
+		back.setBounds(30, 25, 90, 90);
 		back.addMouseListener(this);
 		back.setOpaque(false);
 		add(back);
 		
-		image = new ImageIcon("graphics/background.png");
+		image = new ImageIcon("graphics/background.jpeg");
 		img = image.getImage();
 		img = Menu.resizeImage(image, 1080, 625);
 		JLabel background = new JLabel();
