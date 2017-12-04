@@ -67,7 +67,7 @@ public class BattleSplix extends JPanel implements Runnable, BattleSplixConstant
 		c.gridx = 0;
 		c.gridy = 1;
 		timedt.setFont(timedt.getFont().deriveFont(32f));
-		timedt.setText("<html> TIME: <br> 2:00 <html>");
+		timedt.setText("<html> TIME: <br> 3:00 <html>");
 		stats.add(timedt, c);
 		stats.setPreferredSize(new Dimension(200,600));
 		container.add(this, BorderLayout.CENTER);
