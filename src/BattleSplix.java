@@ -207,7 +207,7 @@ public class BattleSplix extends JPanel implements Runnable, BattleSplixConstant
 		}else if(serverData != null && serverData.startsWith("TIMER")){
 			String[] playersInfo = serverData.split(" ");
 			int curr = Integer.parseInt(playersInfo[1]);
-			if(curr%20 == 0 && curr<120) releasePowerUp();
+			if(curr%30 == 0 && curr<180) releasePowerUp();
 			int minute = curr/60;
 			int sec = curr%60;
 			String s = sec<10?"0"+Integer.toString(sec):Integer.toString(sec);
