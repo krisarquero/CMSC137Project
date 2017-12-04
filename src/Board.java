@@ -20,6 +20,7 @@ public class Board implements BattleSplixConstants{
 		return this.board;
 	}
 
+	//returns the board array
 	public void updateBoard(String data, int x, int y){
 		this.board[x][y] = data;
 	}
@@ -32,6 +33,7 @@ public class Board implements BattleSplixConstants{
 		board[x][y] = data;
 	}
 
+	//Filereading of map
 	public void getFromFile(String file){
 		ArrayList<ArrayList<String>> temp = new ArrayList<>();
 		try{
@@ -95,30 +97,4 @@ public class Board implements BattleSplixConstants{
 			}
 		}
 	}
-
-	// public void removeBlock(Block block){
-	// 	if (block.getType() == Sprite.BRICK || block.getType()==PowerUp.AMMO_UPGRADE
-	// 		|| block.getType()==PowerUp.GRENADE || block.getType()==PowerUp.NEW_LIFE || block.getType()==PowerUp.SPEED_BOOSTER){
-	// 		this.tiles.remove(block);
-	// 		layer.removeBlock(block.getYPos()/Map.BLOCK_WIDTH,block.getXPos()/Map.BLOCK_HEIGHT);
-	// 		try{
-	// 			AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(this.getClass().getResource("Audio/brick.wav"));
-	// 			Clip clip = AudioSystem.getClip();
-	// 			clip.open(audioInputStream);
-	// 			clip.start();
-	// 		}catch(Exception e){}
-
-	// 	}
-	// }
-
-	// public void replaceBlock(Block block){
-	// 	if (block.getType() == Sprite.BRICK){
-	// 		this.tiles.remove(block);
-	// 		Random rand = new Random();
-	// 		int type = rand.nextInt(4)+100;
-
-	// 		this.tiles.add(new PowerUp(block.getXPos(),block.getYPos(),Map.BLOCK_WIDTH,Map.BLOCK_HEIGHT,type));
-	// 		layer.replaceBlock(block.getYPos()/Map.BLOCK_WIDTH,block.getXPos()/Map.BLOCK_HEIGHT,type);
-	// 	}
-	// }
 }

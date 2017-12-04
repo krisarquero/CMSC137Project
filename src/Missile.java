@@ -40,6 +40,7 @@ public class Missile extends Thread implements BattleSplixConstants{
 		this.isCollide = true;
 	}
 
+	//Missile is visible until it goes beyon the bounds
 	public void run(){
 		try{
 			while(!isCollide){

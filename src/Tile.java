@@ -40,13 +40,6 @@ public class Tile implements Runnable{
 	public int getWidth(){
 		return this.width;
 	}
-	
-	public boolean collisionCheck(Tile object){
-		Rectangle thisBounds = new Rectangle(this.getXPos() + this.dx,this.getYPos() + this.dy,this.height,this.width);
-    	Rectangle objectBounds = new Rectangle(object.getXPos(),object.getYPos(),object.getHeight(),object.getWidth());
-   
-    	return (thisBounds.intersects(objectBounds));
-	}
 
 	public void run(){
 		

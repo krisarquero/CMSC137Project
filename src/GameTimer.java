@@ -14,6 +14,7 @@ public class GameTimer extends Thread implements BattleSplixConstants{
 		this.server = server;
 	}	
 
+	//Timer is based on the sleep time of the thread and is sent to the server
 	public void run(){
 		try{
 			int i=0;

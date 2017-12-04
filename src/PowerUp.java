@@ -19,6 +19,7 @@ public class PowerUp extends Thread implements BattleSplixConstants{
 		p.start();
 	}
 
+	//This powerup will last for 8 seconds
 	public void run(){
 		try{
 			send("INCWERPAPU "+name+" "+Integer.toString(speedup));

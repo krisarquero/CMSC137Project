@@ -61,6 +61,7 @@ public class TankPlayer{
 		this.b = rand.nextFloat();
 	}
 
+	//The representation of the player and their color
 	public String toString(){
 		String retval="";
 		retval+="PLAYER ";
@@ -72,30 +73,4 @@ public class TankPlayer{
 		retval+=b;
 		return retval;
 	}
-
-	
-	// public void move(){
-	// 	if (this.getXPos() + Tank.WIDTH + this.getDX() > 600){
-	// 		this.setDirection(0,this.getDY());
-	// 	}
-	// 	if (this.getYPos() + Tank.HEIGHT + this.getDY() > 600){
-	// 		this.setDirection(this.getDX(),0);
-	// 	}
-	// 	if (this.getYPos() + this.getDY() < 0){
-	// 		this.setDirection(this.getDX(),0);
-	// 	}
-	// 	if (this.getXPos() + this.getDX() < 0){
-	// 		this.setDirection(0,this.getDY());
-	// 	}
-	// 	super.move();
-	// }
-
-	// public void collide(Sprite object){
-	// 	this.setDirection(0,0);
-	// }
-
-	// public void notCollide(Sprite object){
-	// 	this.move();
-
-	// }
 }

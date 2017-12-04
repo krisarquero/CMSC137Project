@@ -13,6 +13,7 @@ public class BattleSplixState{
 		players.put(name,player);
 	}
 	
+	//returns a summary of player stats
 	public String toString(){
 		String retval="";
 		//retval+=board.toString();
